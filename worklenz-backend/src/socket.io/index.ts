@@ -8,6 +8,7 @@ import { on_quick_task } from "./commands/on-quick-task";
 import { on_task_end_date_change } from "./commands/on-task-end-date-change";
 import { on_task_label_change } from "./commands/on-task-labels-change";
 import { on_task_name_change } from "./commands/on-task-name-change";
+import { on_task_type_change } from "./commands/on-task-type-change";
 import { on_task_priority_change } from "./commands/on-task-priority-change";
 import { on_task_status_change } from "./commands/on-task-status-change";
 import { on_task_start_date_change } from "./commands/on-task-start-date-change";
@@ -66,6 +67,7 @@ export function register(io: any, socket: Socket) {
   socket.on(SocketEvents.TASK_STATUS_CHANGE.toString(), data => on_task_status_change(io, socket, data));
   socket.on(SocketEvents.TASK_PRIORITY_CHANGE.toString(), data => on_task_priority_change(io, socket, data));
   socket.on(SocketEvents.TASK_NAME_CHANGE.toString(), data => on_task_name_change(io, socket, data));
+  socket.on(SocketEvents.TASK_TYPE_CHANGE.toString(), data => on_task_type_change(io, socket, data));
   socket.on(SocketEvents.TASK_LABELS_CHANGE.toString(), data => on_task_label_change(io, socket, data));
   socket.on(SocketEvents.CREATE_LABEL.toString(), data => on_create_label(io, socket, data));
   socket.on(SocketEvents.TASK_START_DATE_CHANGE.toString(), data => on_task_start_date_change(io, socket, data));

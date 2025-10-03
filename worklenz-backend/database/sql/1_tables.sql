@@ -1414,7 +1414,8 @@ CREATE TABLE IF NOT EXISTS tasks (
     priority_sort_order INTEGER                  DEFAULT 0                  NOT NULL,
     phase_sort_order    INTEGER                  DEFAULT 0                  NOT NULL,
     billable            BOOLEAN                  DEFAULT TRUE,
-    schedule_id         UUID
+    schedule_id         UUID,
+    task_type           TEXT                      DEFAULT 'Task'           NOT NULL
 );
 
 ALTER TABLE tasks

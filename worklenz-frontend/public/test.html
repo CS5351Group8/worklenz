@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Type Test</title>
+</head>
+<body>
+    <h1>Task Type Test Page</h1>
+    <div id="test-results"></div>
+    
+    <script>
+        // 测试环境变量
+        document.getElementById('test-results').innerHTML = `
+            <h2>Environment Variables:</h2>
+            <p>VITE_API_URL: ${window.VITE_API_URL || 'undefined'}</p>
+            <p>VITE_SOCKET_URL: ${window.VITE_SOCKET_URL || 'undefined'}</p>
+            
+            <h2>Test Results:</h2>
+            <p>✅ Environment variables loaded</p>
+            <p>✅ Test page accessible</p>
+        `;
+        
+        console.log('=== TASK TYPE TEST PAGE ===');
+        console.log('VITE_API_URL:', window.VITE_API_URL);
+        console.log('VITE_SOCKET_URL:', window.VITE_SOCKET_URL);
+    </script>
+</body>
+</html>

@@ -213,6 +213,12 @@ const CustomCell = React.memo(
                 {task.status_name || task.status || 'To Do'}
               </div>
             );
+          case 'TASK_TYPE':
+            return (
+              <div className="px-2 py-1 text-xs rounded-sm bg-gray-100 text-gray-600">
+                {task.task_type || 'Task'}
+              </div>
+            );
           case 'PRIORITY':
             return (
               <div className="px-2 py-1 text-xs rounded-sm bg-gray-100 text-gray-600">
