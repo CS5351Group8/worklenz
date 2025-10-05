@@ -10,6 +10,7 @@ export interface Task {
   description?: string;
   status: string;
   priority: string;
+  task_type?: string; // Task type field
   phase?: string;
   assignee?: string;
   assignees?: string[]; // Array of assigned member IDs

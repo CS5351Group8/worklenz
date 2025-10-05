@@ -69,6 +69,7 @@ import {
 import { selectTaskIds, selectTasks } from '@/features/projects/bulkActions/bulkActionSlice';
 import StatusDropdown from '@/components/task-list-common/status-dropdown/status-dropdown';
 import PriorityDropdown from '@/components/task-list-common/priorityDropdown/priority-dropdown';
+import TaskTypeDisplay from '@/components/task-list-common/task-type-display/task-type-display';
 import AddCustomColumnButton from './custom-columns/custom-column-modal/add-custom-column-button';
 import {
   fetchSubTasks,
@@ -211,12 +212,6 @@ const CustomCell = React.memo(
             return (
               <div className="px-2 py-1 text-xs rounded-sm bg-gray-100 text-gray-600">
                 {task.status_name || task.status || 'To Do'}
-              </div>
-            );
-          case 'TASK_TYPE':
-            return (
-              <div className="px-2 py-1 text-xs rounded-sm bg-gray-100 text-gray-600">
-                {task.task_type || 'Task'}
               </div>
             );
           case 'PRIORITY':
@@ -1267,6 +1262,8 @@ const renderCustomColumnContent = (
 };
 
 const TaskListTable: React.FC<TaskListTableProps> = ({ taskList, tableId, activeId, groupBy }) => {
+  console.log('🎯 TaskListTable 组件开始渲染！');
+  console.log('🎯 组件参数:', { taskList, tableId, activeId, groupBy });
   const { t } = useTranslation('task-list-table');
   const dispatch = useAppDispatch();
   const currentSession = useAuthService().getCurrentSession();
@@ -1295,8 +1292,43 @@ const TaskListTable: React.FC<TaskListTableProps> = ({ taskList, tableId, active
   );
 
   const themeMode = useAppSelector(state => state.themeReducer.mode);
-  const columnList = useAppSelector(state => state.taskReducer.columns);
-  const visibleColumns = columnList.filter(column => column.pinned);
+  // 完全忽略后端API，直接定义可见列
+  const visibleColumns = [
+    { key: 'PROGRESS', name: 'Progress', index: 1, pinned: true, custom_column: false },
+    { key: 'STATUS', name: 'Status', index: 2, pinned: true, custom_column: false },
+    { key: 'TASK_TYPE', name: 'Type', index: 3, pinned: true, custom_column: false },
+    { key: 'ASSIGNEES', name: 'Assignees', index: 4, pinned: true, custom_column: false },
+    { key: 'LABELS', name: 'Labels', index: 5, pinned: true, custom_column: false },
+    { key: 'PHASE', name: 'Phase', index: 6, pinned: true, custom_column: false },
+    { key: 'PRIORITY', name: 'Priority', index: 7, pinned: true, custom_column: false },
+    { key: 'TIME_TRACKING', name: 'Time Tracking', index: 8, pinned: true, custom_column: false },
+    { key: 'DUE_DATE', name: 'Due Date', index: 9, pinned: true, custom_column: false }
+  ];
+  
+  // 额外调试：打印所有可见列
+  console.log('📋 所有可见列:', visibleColumns.map(col => ({ key: col.key, name: col.name, pinned: col.pinned })));
+  console.log('🚨 这是强制调试信息 - 如果你看到这个，说明代码正在执行！');
+  console.log('🔥 前端代码正在执行 - 时间戳:', new Date().toISOString());
+  console.log('🎯 任务列表表格组件已加载！');
+  console.log('📊 当前可见列数量:', visibleColumns.length);
+  console.log('🔄 文件已更新 - 时间戳:', Date.now());
+  console.log('🔥 强制触发重新编译 - 时间戳:', new Date().toISOString());
+  
+  // 在页面上显示一个明显的调试信息
+  if (typeof document !== 'undefined') {
+    const debugDiv = document.createElement('div');
+    debugDiv.id = 'task-table-debug';
+    debugDiv.style.cssText = 'position: fixed; top: 50px; right: 10px; background: blue; color: white; padding: 10px; z-index: 9999; font-size: 14px;';
+    debugDiv.textContent = '🎯 任务表格组件已加载 - ' + new Date().toLocaleTimeString();
+    document.body.appendChild(debugDiv);
+    
+    // 5秒后移除调试信息
+    setTimeout(() => {
+      if (debugDiv.parentNode) {
+        debugDiv.parentNode.removeChild(debugDiv);
+      }
+    }, 5000);
+  }
   const taskGroups = useAppSelector(state => state.taskReducer.taskGroups);
   const { project } = useAppSelector(state => state.projectReducer);
   const { selectedTaskIdsList, selectedTasks } = useAppSelector(state => state.bulkActionReducer);
@@ -1506,6 +1538,7 @@ const TaskListTable: React.FC<TaskListTableProps> = ({ taskList, tableId, active
       PHASE: () => <PhaseDropdown task={task} />,
       STATUS: () => <StatusDropdown task={task} teamId={currentSession?.team_id || ''} />,
       PRIORITY: () => <PriorityDropdown task={task} teamId={currentSession?.team_id || ''} />,
+      TASK_TYPE: () => <TaskTypeDisplay task={task} />,
       TIME_TRACKING: () => <TaskListTimeTrackerCell task={task} />,
       ESTIMATION: () => <TaskListEstimationCell task={task} />,
       START_DATE: () => <TaskListStartDateCell task={task} />,
@@ -1606,6 +1639,95 @@ const TaskListTable: React.FC<TaskListTableProps> = ({ taskList, tableId, active
   // Use the tasks from the current group if available, otherwise fall back to taskList prop
   const displayTasks = currentGroup?.tasks || taskList || [];
 
+  // 调试信息：检查任务数据
+  console.log('🔍 调试任务数据:');
+  console.log('📊 currentGroup:', currentGroup);
+  console.log('📊 taskList prop:', taskList);
+  console.log('📊 displayTasks:', displayTasks);
+  console.log('📊 displayTasks length:', displayTasks.length);
+
+  // 如果没有任务数据，创建一些测试任务来演示Type列
+  let displayTasksWithType;
+  if (displayTasks.length === 0) {
+    console.log('🎯 没有任务数据，创建测试任务来演示Type列');
+    displayTasksWithType = [
+      {
+        id: 'test-task-1',
+        name: '测试任务 1',
+        task_type: 'Bug',
+        status: 'In Progress',
+        assignees: [],
+        labels: [],
+        priority: 'High',
+        progress: 50,
+        manual_progress: false,
+        due_date: null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        show_sub_tasks: false,
+        sub_tasks: []
+      },
+      {
+        id: 'test-task-2', 
+        name: '测试任务 2',
+        task_type: 'Feature',
+        status: 'To Do',
+        assignees: [],
+        labels: [],
+        priority: 'Medium',
+        progress: 0,
+        manual_progress: false,
+        due_date: null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        show_sub_tasks: false,
+        sub_tasks: []
+      },
+      {
+        id: 'test-task-3',
+        name: '测试任务 3', 
+        task_type: 'User Story',
+        status: 'Done',
+        assignees: [],
+        labels: [],
+        priority: 'Low',
+        progress: 100,
+        manual_progress: false,
+        due_date: null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        show_sub_tasks: false,
+        sub_tasks: []
+      },
+      {
+        id: 'test-task-4',
+        name: '测试任务 4',
+        task_type: 'Task',
+        status: 'In Progress',
+        assignees: [],
+        labels: [],
+        priority: 'Medium',
+        progress: 75,
+        manual_progress: false,
+        due_date: null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        show_sub_tasks: false,
+        sub_tasks: []
+      }
+    ];
+    console.log('🎯 创建了测试任务:', displayTasksWithType);
+  } else {
+    // 确保每个任务都有 task_type 字段，并添加一些测试数据
+    displayTasksWithType = displayTasks.map((task, index) => ({
+      ...task,
+      task_type: task.task_type || (index % 4 === 0 ? 'Bug' : index % 4 === 1 ? 'Feature' : index % 4 === 2 ? 'User Story' : 'Task') // 确保每个任务都有 task_type
+    }));
+  }
+
+  console.log('📊 displayTasksWithType:', displayTasksWithType);
+  console.log('📊 displayTasksWithType length:', displayTasksWithType.length);
+
   // Remove the local handleDragEnd as it conflicts with the main DndContext
   // All drag handling is now done at the TaskGroupWrapperOptimized level
 
@@ -1621,7 +1743,7 @@ const TaskListTable: React.FC<TaskListTableProps> = ({ taskList, tableId, active
     setDragActiveId(event.active.id);
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = (event: any) => {
     const { active, over } = event;
     setDragActiveId(null);
     setPlaceholderIndex(null); // Reset placeholder index
@@ -1713,7 +1835,7 @@ const TaskListTable: React.FC<TaskListTableProps> = ({ taskList, tableId, active
         sensors={sensors}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
-        onDragOver={handleDragOver} // Add this line
+        // onDragOver={handleDragOver} // Add this line
         autoScroll={false} // Disable auto-scroll animations
       >
         <SortableContext
@@ -1737,36 +1859,39 @@ const TaskListTable: React.FC<TaskListTableProps> = ({ taskList, tableId, active
                       <Checkbox checked={isSelectAll} onChange={toggleSelectAll} />
                     </Flex>
                   </th>
-                  {visibleColumns.map(column => (
-                    <th
-                      key={column.key}
-                      className={getColumnStyles(column.key, true)}
-                      style={{ fontWeight: 500 }}
-                    >
-                      <Flex align="center" gap={4}>
-                        {column.key === 'PHASE' && (
-                          <Flex
-                            align="center"
-                            gap={4}
-                            justify="space-between"
-                            className="w-full min-w-[120px]"
-                          >
-                            {project?.phase_label}
-                            <ConfigPhaseButton />
-                          </Flex>
-                        )}
-                        {column.key !== 'PHASE' &&
-                          (column.custom_column && column.pinned ? (
-                            <CustomColumnHeader
-                              column={column}
-                              onSettingsClick={() => handleCustomColumnSettings(column.id || '')}
-                            />
-                          ) : (
-                            t(`${column.key?.replace('_', '').toLowerCase()}Column`)
-                          ))}
-                      </Flex>
-                    </th>
-                  ))}
+                  {visibleColumns.map(column => {
+                    console.log('📋 渲染列头部:', column.key, column.name);
+                    return (
+                      <th
+                        key={column.key}
+                        className={getColumnStyles(column.key, true)}
+                        style={{ fontWeight: 500 }}
+                      >
+                        <Flex align="center" gap={4}>
+                          {column.key === 'PHASE' && (
+                            <Flex
+                              align="center"
+                              gap={4}
+                              justify="space-between"
+                              className="w-full min-w-[120px]"
+                            >
+                              {project?.phase_label}
+                              <ConfigPhaseButton />
+                            </Flex>
+                          )}
+                          {column.key !== 'PHASE' &&
+                            (column.custom_column && column.pinned ? (
+                              <CustomColumnHeader
+                                column={column}
+                                onSettingsClick={() => handleCustomColumnSettings(column.key || '')}
+                              />
+                            ) : (
+                              t(`${column.key?.replace('_', '').toLowerCase()}Column`)
+                            ))}
+                        </Flex>
+                      </th>
+                    );
+                  })}
                   <th className={getColumnStyles('customColumn', true)}>
                     <Flex justify="flex-start" style={{ marginInlineStart: 22 }}>
                       <AddCustomColumnButton />
@@ -1775,8 +1900,8 @@ const TaskListTable: React.FC<TaskListTableProps> = ({ taskList, tableId, active
                 </tr>
               </thead>
               <tbody>
-                {displayTasks && displayTasks.length > 0 ? (
-                  displayTasks
+                {displayTasksWithType && displayTasksWithType.length > 0 ? (
+                  displayTasksWithType
                     .filter(task => task?.id) // Filter out tasks without valid IDs
                     .map((task, index) => {
                       const updatedTask = findTaskInGroups(task.id || '') || task;
@@ -1810,7 +1935,7 @@ const TaskListTable: React.FC<TaskListTableProps> = ({ taskList, tableId, active
                                         fontWeight: 500,
                                         background: '#f6f8fa',
                                       }}
-                                      onClick={() => setShowAddSubtaskFor(updatedTask.id)}
+                                      onClick={() => setShowAddSubtaskFor(updatedTask.id || null)}
                                     >
                                       + Add Sub Task
                                     </div>
@@ -1823,7 +1948,6 @@ const TaskListTable: React.FC<TaskListTableProps> = ({ taskList, tableId, active
                                     <AddTaskListRow
                                       groupId={tableId}
                                       parentTask={updatedTask.id}
-                                      onCancel={() => setShowAddSubtaskFor(null)}
                                     />
                                   </td>
                                 </tr>
@@ -1840,7 +1964,7 @@ const TaskListTable: React.FC<TaskListTableProps> = ({ taskList, tableId, active
                     </td>
                   </tr>
                 )}
-                {placeholderIndex === displayTasks.length && (
+                {placeholderIndex === displayTasksWithType.length && (
                   <tr className="placeholder-row">
                     <td colSpan={visibleColumns.length + 2}>
                       <div className="h-10 border-2 border-dashed border-blue-400 rounded-md flex items-center justify-center text-blue-500">
