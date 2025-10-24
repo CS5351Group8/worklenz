@@ -941,7 +941,7 @@ DECLARE
     _label         JSON;
 BEGIN
     INSERT INTO tasks (name, done, priority_id, project_id, reporter_id, start_date, end_date, total_minutes,
-                       description, parent_task_id, status_id, sort_order)
+                       description, parent_task_id, status_id, sort_order, task_type)
     VALUES (TRIM((_body ->> 'name')::TEXT), (FALSE),
             COALESCE((_body ->> 'priority_id')::UUID, (SELECT id FROM task_priorities WHERE value = 1)),
             (_body ->> 'project_id')::UUID,
@@ -952,7 +952,8 @@ BEGIN
             (_body ->> 'description')::TEXT,
             (_body ->> 'parent_task_id')::UUID,
             (_body ->> 'status_id')::UUID,
-            COALESCE((SELECT MAX(sort_order) + 1 FROM tasks WHERE project_id = (_body ->> 'project_id')::UUID), 0))
+            COALESCE((SELECT MAX(sort_order) + 1 FROM tasks WHERE project_id = (_body ->> 'project_id')::UUID), 0),
+            COALESCE(NULLIF(TRIM((_body ->> 'task_type')::TEXT), ''), 'Task'))
     RETURNING id INTO _task_id;
 
     -- insert task assignees
@@ -3484,6 +3485,7 @@ BEGIN
                  total_minutes,
                  priority_id,
                  project_id,
+                 task_type,
                  created_at,
                  updated_at,
                  status_id,
@@ -3736,6 +3738,7 @@ BEGIN
                   WHERE (tt.parent_task_id = t.id OR tt.task_id = t.id)
                     AND tt.is_done IS TRUE)
                      AS completed_count,
+                 t.task_type,
 
                  (SELECT get_task_assignees(t.id)) AS assignees,
 
@@ -5590,13 +5593,14 @@ DECLARE
     _new_assignees JSON;
 BEGIN
     UPDATE tasks
-    SET name          = TRIM((_body ->> 'name')::TEXT),
+    SET name          = COALESCE(TRIM((_body ->> 'name')::TEXT), name),
         start_date    = (_body ->> 'start')::TIMESTAMPTZ,
         end_date      = (_body ->> 'end')::TIMESTAMPTZ,
-        priority_id   = (_body ->> 'priority_id')::UUID,
+        priority_id   = COALESCE((_body ->> 'priority_id')::UUID, priority_id),
         description   = COALESCE(TRIM((_body ->> 'description')::TEXT), description),
-        total_minutes = (_body ->> 'total_minutes')::NUMERIC,
-        status_id     = (_body ->> 'status_id')::UUID
+        total_minutes = COALESCE((_body ->> 'total_minutes')::NUMERIC, total_minutes),
+        status_id     = COALESCE((_body ->> 'status_id')::UUID, status_id),
+        task_type     = COALESCE(NULLIF(TRIM((_body ->> 'task_type')::TEXT), ''), task_type)
     WHERE id = (_body ->> 'id')::UUID;
 
     SELECT COALESCE(ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(rec))), '[]'::JSON)
@@ -6665,4 +6669,43 @@ BEGIN
         END IF;
     END LOOP;
 END;
+$$;
+
+CREATE OR REPLACE FUNCTION handle_task_type_change(_task_id uuid, _task_type text, _user_id uuid) RETURNS json
+    LANGUAGE plpgsql
+AS
+$$
+DECLARE
+    _type          TEXT;
+    _previous_type TEXT;
+    _user_name     TEXT;
+    _message       TEXT;
+    _assignees     JSON;
+BEGIN
+
+    IF (is_null_or_empty(_task_type))
+    THEN
+        SELECT task_type FROM tasks WHERE id = _task_id INTO _type;
+    ELSE
+        SELECT task_type FROM tasks WHERE id = _task_id INTO _previous_type;
+        UPDATE tasks SET task_type = _task_type WHERE id = _task_id RETURNING task_type INTO _type;
+    END IF;
+
+    IF (_type != _previous_type)
+    THEN
+        SELECT get_task_assignees(_task_id) INTO _assignees;
+
+        SELECT name FROM users WHERE id = _user_id INTO _user_name;
+
+        _message = CONCAT(_user_name, ' has changed task type from "', _previous_type, '" to "', _type, '"');
+    END IF;
+
+    RETURN JSON_BUILD_OBJECT(
+        'task_type', _type,
+        'previous_type', _previous_type,
+        'project_id', (SELECT project_id FROM tasks WHERE id = _task_id),
+        'message', _message,
+        'members', _assignees
+        );
+END
 $$;

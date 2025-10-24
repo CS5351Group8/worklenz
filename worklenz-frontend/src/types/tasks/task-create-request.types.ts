@@ -1,6 +1,7 @@
 import { ITask } from './task.types';
 
 export interface ITaskCreateRequest extends ITask {
+  task_type?: string;
   status_id?: string;
   project_id?: string;
   task_index?: number;

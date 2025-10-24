@@ -15,6 +15,9 @@ import { colors } from '@/styles/colors';
 import { ITaskFormViewModel, ITaskViewModel } from '@/types/tasks/task.types';
 import { IProjectTask } from '@/types/project/projectTasksViewModel.types';
 import { simpleDateFormat } from '@/utils/simpleDateFormat';
+import { useSocket } from '@/socket/socketContext';
+import { SocketEvents } from '@/shared/socket-events';
+import { useAuthService } from '@/hooks/useAuth';
 
 import NotifyMemberSelector from './notify-member-selector';
 import TaskDrawerPhaseSelector from './details/task-drawer-phase-selector/task-drawer-phase-selector';
@@ -76,17 +79,27 @@ const ConditionalProgressInput = ({ task, form }: ConditionalProgressInputProps)
 };
 
 const TaskDetailsForm = ({ taskFormViewModel = null }: TaskDetailsFormProps) => {
+  console.log('=== TASK DETAILS FORM COMPONENT RENDERED ===');
+  console.log('taskFormViewModel prop:', taskFormViewModel);
+  
   const { t } = useTranslation('task-drawer/task-drawer');
   const [form] = Form.useForm();
   const { project } = useAppSelector(state => state.projectReducer);
+  const { socket } = useSocket();
+  const currentSession = useAuthService().getCurrentSession();
 
   useEffect(() => {
+    console.log('=== TASK DETAILS FORM RENDERED ===');
+    console.log('taskFormViewModel:', taskFormViewModel);
+    
     if (!taskFormViewModel) {
       form.resetFields();
       return;
     }
 
     const { task } = taskFormViewModel;
+    console.log('Task data:', task);
+    console.log('Task type from API:', task?.task_type);
     form.setFieldsValue({
       taskId: task?.id,
       phase: task?.phase_id,
@@ -100,7 +113,9 @@ const TaskDetailsForm = ({ taskFormViewModel = null }: TaskDetailsFormProps) => 
       notify: [],
       progress_value: task?.progress_value || null,
       weight: task?.weight || null,
+      task_type: task?.task_type || 'Task',
     });
+    console.log('Form task_type set to:', task?.task_type || 'Task');
   }, [taskFormViewModel, form]);
 
   const priorityMenuItems = taskFormViewModel?.priorities?.map(priority => ({
@@ -108,6 +123,54 @@ const TaskDetailsForm = ({ taskFormViewModel = null }: TaskDetailsFormProps) => 
     value: priority.id,
     label: priority.name,
   }));
+
+  const handleTaskTypeChange = (taskType: string) => {
+    console.log('=== TASK TYPE CHANGE DEBUG ===');
+    console.log('handleTaskTypeChange called with:', taskType);
+    console.log('taskFormViewModel:', taskFormViewModel);
+    console.log('task:', taskFormViewModel?.task);
+    console.log('task.id:', taskFormViewModel?.task?.id);
+    console.log('currentSession:', currentSession);
+    console.log('socket connected:', socket?.connected);
+    
+    const task = taskFormViewModel?.task;
+    if (!task?.id || !taskType) {
+      console.log('Early return: task.id =', task?.id, 'taskType =', taskType);
+      return;
+    }
+
+    console.log('Sending TASK_TYPE_CHANGE event:', {
+      task_id: task.id,
+      task_type: taskType,
+      team_id: currentSession?.team_id,
+    });
+
+    // Update form value immediately for better UX
+    form.setFieldValue('task_type', taskType);
+    
+    if (socket?.connected) {
+      socket.emit(
+        SocketEvents.TASK_TYPE_CHANGE.toString(),
+        JSON.stringify({
+          task_id: task.id,
+          task_type: taskType,
+          team_id: currentSession?.team_id,
+        })
+      );
+      
+      // Listen for the response
+      socket.once(
+        SocketEvents.TASK_TYPE_CHANGE.toString(),
+        (data: any) => {
+          console.log('Task type updated:', data);
+          // Update the form value with server response
+          form.setFieldValue('task_type', data.task_type);
+        }
+      );
+    } else {
+      console.log('Socket not connected, cannot send event');
+    }
+  };
 
   const handleSubmit = async () => {
     try {
@@ -149,6 +212,22 @@ const TaskDetailsForm = ({ taskFormViewModel = null }: TaskDetailsFormProps) => 
           phases={taskFormViewModel?.phases || []}
           task={taskFormViewModel?.task as ITaskViewModel}
         />
+
+        <Form.Item name="task_type" label="Type">
+          <Select
+            placeholder="Select task type"
+            onChange={(value) => {
+              console.log('SELECT ONCHANGE TRIGGERED:', value);
+              handleTaskTypeChange(value);
+            }}
+            options={[
+              { label: 'Task', value: 'Task' },
+              { label: 'User Story', value: 'User Story' },
+              { label: 'Bug', value: 'Bug' },
+              { label: 'Feature', value: 'Feature' },
+            ]}
+          />
+        </Form.Item>
 
         <Form.Item name="assignees" label={t('taskInfoTab.details.assignees')}>
           <Flex gap={4} align="center">

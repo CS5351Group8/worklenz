@@ -323,15 +323,16 @@ export default class TasksControllerV2 extends TasksControllerBase {
              (SELECT name FROM users WHERE id = t.reporter_id) AS reporter,
              (SELECT id FROM task_priorities WHERE id = t.priority_id) AS priority,
              (SELECT value FROM task_priorities WHERE id = t.priority_id) AS priority_value,
-             total_minutes,
-             (SELECT SUM(time_spent) FROM task_work_log WHERE task_id = t.id) AS total_minutes_spent,
-             created_at,
-             updated_at,
+            total_minutes,
+            (SELECT SUM(time_spent) FROM task_work_log WHERE task_id = t.id) AS total_minutes_spent,
+            created_at,
+            updated_at,
              completed_at,
              start_date,
              billable,
-             schedule_id,
-             END_DATE ${customColumnsQuery} ${statusesQuery}
+            schedule_id,
+            END_DATE,
+            t.task_type ${customColumnsQuery} ${statusesQuery}
       FROM tasks t
       WHERE ${filters} ${searchQuery}
       ORDER BY ${sortFields}
@@ -1290,6 +1291,7 @@ export default class TasksControllerV2 extends TasksControllerBase {
         custom_column_values: task.custom_column_values || {}, // Include custom column values
         createdAt: task.created_at || new Date().toISOString(),
         updatedAt: task.updated_at || new Date().toISOString(),
+        task_type: task.task_type || "Task",
         order: TasksControllerV2.getTaskSortOrder(task, groupBy),
         // Additional metadata for frontend
         originalStatusId: task.status,
