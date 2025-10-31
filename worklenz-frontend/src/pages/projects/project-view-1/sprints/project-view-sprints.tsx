@@ -1,8 +1,11 @@
 import './project-view-updates.css';
 import { Collapse, Table } from "@/shared/antd-imports";
 import { CollapseProps } from "antd";
-import { ISprint } from "@/types/project/projectTasksViewModel.types";
+import {IProjectTask, ISprint} from "@/types/project/projectTasksViewModel.types";
 import {useAuthService} from "@/hooks/useAuth";
+import TaskListProgressCell
+    from "@/pages/projects/projectView/taskList/task-list-table/task-list-table-cells/task-list-progress-cell/task-list-progress-cell";
+import React from "react";
 
 const ProjectViewSprints = () => {
     const currentSession = useAuthService().getCurrentSession();
@@ -61,6 +64,9 @@ const ProjectViewSprints = () => {
             title: 'Progress',
             dataIndex: 'complete_ratio',
             key: 'complete_ratio',
+            render: (task: IProjectTask) => (
+                <TaskListProgressCell task={task} />
+            )
         },
         {
             title: 'Status',
