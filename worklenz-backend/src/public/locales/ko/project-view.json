@@ -10,5 +10,6 @@
   "error": "오류로드 프로젝트",
   "pinnedTab": "기본 탭으로 고정되었습니다",
   "pinTab": "기본 탭으로 핀",
-  "unpinTab": "기본 탭을 핀"
+  "unpinTab": "기본 탭을 핀",
+  "backlog": "백로그"
 }
