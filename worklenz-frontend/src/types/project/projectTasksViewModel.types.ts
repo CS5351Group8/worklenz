@@ -100,3 +100,12 @@ export interface IProjectTasksViewModel {
   total?: number;
   data?: IProjectTask[];
 }
+
+export interface ISprint {
+    id: number
+    project_id: number
+    name: string
+    start_date?: string
+    end_date?: string
+    goal?: string
+}
