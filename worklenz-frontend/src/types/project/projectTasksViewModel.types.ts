@@ -108,4 +108,5 @@ export interface ISprint {
     start_date?: string
     end_date?: string
     goal?: string
+    tasks?: IProjectTask[]
 }
