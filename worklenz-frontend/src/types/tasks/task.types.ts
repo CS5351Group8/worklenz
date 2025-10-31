@@ -19,6 +19,7 @@ export interface ITaskAssignee {
 export interface ITask {
   id: string;
   name: string;
+  task_type: string;
   description: string;
   status_id: string;
   priority: string;

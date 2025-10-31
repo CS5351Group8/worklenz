@@ -1,7 +1,7 @@
 // Worklenz Service Worker
 // Provides offline functionality, caching, and performance improvements
 
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v3.0.0';
 const CACHE_NAMES = {
   STATIC: `worklenz-static-${CACHE_VERSION}`,
   DYNAMIC: `worklenz-dynamic-${CACHE_VERSION}`,
@@ -48,6 +48,14 @@ self.addEventListener('install', event => {
   
   event.waitUntil(
     (async () => {
+      // Force clear all old caches
+      const cacheNames = await caches.keys();
+      await Promise.all(
+        cacheNames.map(cacheName => {
+          console.log('Service Worker: Deleting old cache:', cacheName);
+          return caches.delete(cacheName);
+        })
+      );
       try {
         const cache = await caches.open(CACHE_NAMES.STATIC);
         await cache.addAll(STATIC_CACHE_URLS);

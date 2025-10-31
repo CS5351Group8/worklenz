@@ -20,6 +20,7 @@ export const BASE_COLUMNS = [
   { id: 'description', label: 'descriptionColumn', width: '260px', key: COLUMN_KEYS.DESCRIPTION },
   { id: 'progress', label: 'progressColumn', width: '120px', key: COLUMN_KEYS.PROGRESS },
   { id: 'status', label: 'statusColumn', width: '120px', key: COLUMN_KEYS.STATUS },
+  { id: 'taskType', label: 'typeColumn', width: '120px', key: 'TASK_TYPE' },
   { id: 'assignees', label: 'assigneesColumn', width: '150px', key: COLUMN_KEYS.ASSIGNEES },
   { id: 'labels', label: 'labelsColumn', width: '250px', key: COLUMN_KEYS.LABELS },
   { id: 'phase', label: 'phaseColumn', width: '120px', key: COLUMN_KEYS.PHASE },

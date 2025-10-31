@@ -172,7 +172,15 @@ export const fetchTaskGroups = createAsyncThunk(
       };
 
       const response = await tasksApiService.getTaskListV3(config);
-      return response.body;
+      const data = response.body;
+      const formattedTasks = data?.tasks?.map(task => ({
+        ...task,
+        task_type: task.task_type || 'Task',
+      })) || [];
+      return {
+        ...data,
+        tasks: formattedTasks,
+      };
     } catch (error) {
       logger.error('Fetch Task Groups', error);
       if (error instanceof Error) {
