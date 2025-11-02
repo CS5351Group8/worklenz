@@ -6,6 +6,7 @@ import {useAuthService} from "@/hooks/useAuth";
 import TaskListProgressCell
     from "@/pages/projects/projectView/taskList/task-list-table/task-list-table-cells/task-list-progress-cell/task-list-progress-cell";
 import React from "react";
+import StatusDropdown from "@components/task-list-common/status-dropdown/status-dropdown";
 
 const ProjectViewSprints = () => {
     const currentSession = useAuthService().getCurrentSession();
@@ -19,13 +20,13 @@ const ProjectViewSprints = () => {
             goal: "mock goal!",
             tasks: [{
                 name: "Mock task1",
-                complete_ratio: 0.6,
+                complete_ratio: 60,
                 status: "to_do",
                 priority: "critical",
                 manual_progress: "1",
             },{
                 name: "Mock task 2 +++",
-                complete_ratio: 0.2,
+                complete_ratio: 20,
                 status: "in_progress",
                 priority: "high",
                 manual_progress: "2",
@@ -40,13 +41,13 @@ const ProjectViewSprints = () => {
             goal: "This is a mock goal in sprint 2!",
             tasks: [{
                 name: "Mock task 2-1",
-                complete_ratio: 0.1,
+                complete_ratio: 10,
                 status: "done",
                 priority: "medium",
                 manual_progress: "2-1",
             },{
                 name: "Mock task name is 2-2 +++",
-                complete_ratio: 0.3,
+                complete_ratio: 30,
                 status: "completed",
                 priority: "low",
                 manual_progress: "2-2",
@@ -62,7 +63,6 @@ const ProjectViewSprints = () => {
         },
         {
             title: 'Progress',
-            dataIndex: 'complete_ratio',
             key: 'complete_ratio',
             render: (task: IProjectTask) => (
                 <TaskListProgressCell task={task} />
@@ -70,8 +70,11 @@ const ProjectViewSprints = () => {
         },
         {
             title: 'Status',
-            dataIndex: 'status',
             key: 'status',
+            // @ts-ignore
+            render: (_, task: IProjectTask) => (
+                <StatusDropdown task={task} teamId={currentSession?.team_id || ''} />
+            )
         },
         {
             title: 'Priority',
@@ -87,7 +90,7 @@ const ProjectViewSprints = () => {
             <Table
                 dataSource={sprint.tasks}
                 columns={taskTableColumns}
-                rowKey={(record, index) => `task-${index}`} // 建议使用更稳定的 key，如任务 id（如果存在）
+                rowKey={(record, index) => `task-${index}`}
                 pagination={false}
             />
         ),
