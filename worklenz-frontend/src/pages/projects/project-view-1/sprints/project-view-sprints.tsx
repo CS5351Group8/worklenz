@@ -88,7 +88,21 @@ const ProjectViewSprints = () => {
             title: 'Priority',
             dataIndex: 'priority',
             key: 'priority',
-        },
+            render: (priority: string) => {
+                const priorityLower = priority?.toLowerCase() || '';
+                const priorityMap: Record<string, { color: string; text: string }> = {
+                    critical: { color: '#ff4d4f', text: 'Critical' },
+                    high: { color: '#fa8c16', text: 'High' },
+                    medium: { color: '#1890ff', text: 'Medium' },
+                    low: { color: '#52c41a', text: 'Low' },
+                };
+                const priorityInfo = priorityMap[priorityLower] || {
+                    color: '#f0f0f0',
+                    text: priority || 'Unknown'
+                };
+                return <Tag color={priorityInfo.color}>{priorityInfo.text}</Tag>;
+            }
+        }
     ];
 
     const items: CollapseProps['items'] = mockData.map((sprint: ISprint) => ({
