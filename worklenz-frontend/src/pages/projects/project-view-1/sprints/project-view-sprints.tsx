@@ -71,31 +71,17 @@ const ProjectViewSprints = () => {
             key: 'status',
             // @ts-ignore
             render: (task: IProjectTask) => {
-                // const themeMode = useAppSelector(state => state.themeReducer.mode);
                 const status = task.status?.toLowerCase() || '';
-                const statusColorMap: Record<string, { light: string; dark: string }> = {
-                    to_do: { light: '#7c7c7c', dark: '#434343' },
-                    todo: { light: '#7c7c7c', dark: '#434343' },
-                    doing: { light: '#1890ff', dark: '#177ddc' },
-                    in_progress: { light: '#1890ff', dark: '#177ddc' },
-                    done: { light: '#52c41a', dark: '#389e0d' },
-                    completed: { light: '#52c41a', dark: '#389e0d' },
+                const statusMap: Record<string, { color: string; text: string }> = {
+                    to_do: { color: '#7c7c7c', text: 'To Do' },
+                    todo: { color: '#7c7c7c', text: 'To Do' },
+                    doing: { color: '#1890ff', text: 'Doing' },
+                    in_progress: { color: '#1890ff', text: 'In Progress' },
+                    done: { color: '#52c41a', text: 'Done' },
+                    completed: { color: '#52c41a', text: 'Completed' },
                 };
-
-                const color = statusColorMap[status]
-                    ?  statusColorMap[status].light
-                    : '#f0f0f0';
-
-                const displayText = {
-                    'to_do': 'To Do',
-                    'todo': 'To Do',
-                    'doing': 'Doing',
-                    'in_progress': 'In Progress',
-                    'done': 'Done',
-                    'completed': 'Completed',
-                }[status] || task.status;
-
-                return <Tag color={color}>{displayText}</Tag>;
+                const statusInfo = statusMap[status] || { color: '#f0f0f0', text: task.status };
+                return <Tag color={statusInfo.color}>{statusInfo.text}</Tag>;
             }
         },
         {
