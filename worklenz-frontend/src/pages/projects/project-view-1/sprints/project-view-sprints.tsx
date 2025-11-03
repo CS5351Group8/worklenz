@@ -1,6 +1,6 @@
 import './project-view-updates.css';
-import { Collapse, Table } from "@/shared/antd-imports";
-import { CollapseProps } from "antd";
+import {Collapse, Table} from "@/shared/antd-imports";
+import {CollapseProps} from "antd";
 import {IProjectTask, ISprint} from "@/types/project/projectTasksViewModel.types";
 import TaskListProgressCell
     from "@/pages/projects/projectView/taskList/task-list-table/task-list-table-cells/task-list-progress-cell/task-list-progress-cell";
@@ -22,7 +22,7 @@ const ProjectViewSprints = () => {
                 status: "Todo",
                 priority: "critical",
                 manual_progress: "1",
-            },{
+            }, {
                 name: "Mock task 2 +++",
                 complete_ratio: 20,
                 status: "in_progress",
@@ -43,7 +43,7 @@ const ProjectViewSprints = () => {
                 status: "done",
                 priority: "medium",
                 manual_progress: "2-1",
-            },{
+            }, {
                 name: "Mock task name is 2-2 +++",
                 complete_ratio: 30,
                 status: "completed",
@@ -66,7 +66,7 @@ const ProjectViewSprints = () => {
             align: 'center' as const,
             className: 'progress-column',
             render: (task: IProjectTask) => (
-                <TaskListProgressCell task={task} />
+                <TaskListProgressCell task={task}/>
             )
         },
         {
@@ -78,14 +78,14 @@ const ProjectViewSprints = () => {
             render: (task: IProjectTask) => {
                 const status = task.status?.toLowerCase() || '';
                 const statusMap: Record<string, { color: string; text: string }> = {
-                    to_do: { color: '#7c7c7c', text: 'To Do' },
-                    todo: { color: '#7c7c7c', text: 'To Do' },
-                    doing: { color: '#1890ff', text: 'Doing' },
-                    in_progress: { color: '#1890ff', text: 'In Progress' },
-                    done: { color: '#52c41a', text: 'Done' },
-                    completed: { color: '#52c41a', text: 'Completed' },
+                    to_do: {color: '#7c7c7c', text: 'To Do'},
+                    todo: {color: '#7c7c7c', text: 'To Do'},
+                    doing: {color: '#1890ff', text: 'Doing'},
+                    in_progress: {color: '#1890ff', text: 'In Progress'},
+                    done: {color: '#52c41a', text: 'Done'},
+                    completed: {color: '#52c41a', text: 'Completed'},
                 };
-                const statusInfo = statusMap[status] || { color: '#f0f0f0', text: task.status };
+                const statusInfo = statusMap[status] || {color: '#f0f0f0', text: task.status};
                 return <Tag color={statusInfo.color}>{statusInfo.text}</Tag>;
             }
         },
@@ -99,10 +99,10 @@ const ProjectViewSprints = () => {
             render: (priority: string) => {
                 const priorityLower = priority?.toLowerCase() || '';
                 const priorityMap: Record<string, { color: string; text: string }> = {
-                    critical: { color: '#ff4d4f', text: 'Critical' },
-                    high: { color: '#fa8c16', text: 'High' },
-                    medium: { color: '#1890ff', text: 'Medium' },
-                    low: { color: '#52c41a', text: 'Low' },
+                    critical: {color: '#ff4d4f', text: 'Critical'},
+                    high: {color: '#fa8c16', text: 'High'},
+                    medium: {color: '#1890ff', text: 'Medium'},
+                    low: {color: '#52c41a', text: 'Low'},
                 };
                 const priorityInfo = priorityMap[priorityLower] || {
                     color: '#f0f0f0',
