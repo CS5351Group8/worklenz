@@ -4,8 +4,9 @@ import {CollapseProps} from "antd";
 import {IProjectTask, ISprint} from "@/types/project/projectTasksViewModel.types";
 import TaskListProgressCell
     from "@/pages/projects/projectView/taskList/task-list-table/task-list-table-cells/task-list-progress-cell/task-list-progress-cell";
-import React from "react";
+import React, {useEffect, useState, useCallback} from "react";
 import {Tag} from "antd/es";
+import {sprintService} from "@api/sprint/sprint.api.service";
 
 const ProjectViewSprints = () => {
     const mockData: ISprint[] = [
@@ -52,6 +53,41 @@ const ProjectViewSprints = () => {
             }]
         },
     ];
+
+    const [sprints, setSprints] = useState<ISprint[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    const getSprints = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            const result = await sprintService.getSprints();
+            console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++', result.data);
+
+            if (result.data && Array.isArray(result.data)) {
+                setSprints(result.data);
+            } else {
+                console.warn('返回的数据格式与预期不符:', result.data);
+                setSprints(mockData);
+            }
+        } catch (error) {
+            console.error('++++++++++++++++++++++出错:', error);
+            setSprints(mockData);
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        void getSprints();
+    }, [getSprints]);
+
+    if (isLoading) {
+        return null;
+    }
+
+    if (sprints.length === 0) {
+        setSprints(mockData)
+    }
 
     const taskTableColumns = [
         {
@@ -113,7 +149,7 @@ const ProjectViewSprints = () => {
         }
     ];
 
-    const items: CollapseProps['items'] = mockData.map((sprint: ISprint) => ({
+    const items: CollapseProps['items'] = sprints.map((sprint: ISprint) => ({
         key: sprint.id.toString(),
         label: <div>{sprint.name}</div>,
         children: (
@@ -130,7 +166,7 @@ const ProjectViewSprints = () => {
     return (
         <Collapse
             items={items}
-            defaultActiveKey={[mockData[0]?.id.toString()]}
+            defaultActiveKey={[sprints[0]?.id.toString()]}
         />
     );
 };
