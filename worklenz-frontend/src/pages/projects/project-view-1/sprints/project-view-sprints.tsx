@@ -62,6 +62,9 @@ const ProjectViewSprints = () => {
         {
             title: 'Progress',
             key: 'complete_ratio',
+            width: 120,
+            align: 'center' as const,
+            className: 'progress-column',
             render: (task: IProjectTask) => (
                 <TaskListProgressCell task={task} />
             )
@@ -69,7 +72,9 @@ const ProjectViewSprints = () => {
         {
             title: 'Status',
             key: 'status',
-            // @ts-ignore
+            width: 120,
+            align: 'center' as const,
+            className: 'status-column',
             render: (task: IProjectTask) => {
                 const status = task.status?.toLowerCase() || '';
                 const statusMap: Record<string, { color: string; text: string }> = {
@@ -88,6 +93,9 @@ const ProjectViewSprints = () => {
             title: 'Priority',
             dataIndex: 'priority',
             key: 'priority',
+            width: 120,
+            align: 'center' as const,
+            className: 'priority-column',
             render: (priority: string) => {
                 const priorityLower = priority?.toLowerCase() || '';
                 const priorityMap: Record<string, { color: string; text: string }> = {
@@ -114,6 +122,7 @@ const ProjectViewSprints = () => {
                 columns={taskTableColumns}
                 rowKey={(record, index) => `task-${index}`}
                 pagination={false}
+                className="project-sprints-table"
             />
         ),
     }));
