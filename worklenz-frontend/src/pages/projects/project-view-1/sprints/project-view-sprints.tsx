@@ -2,14 +2,12 @@ import './project-view-updates.css';
 import { Collapse, Table } from "@/shared/antd-imports";
 import { CollapseProps } from "antd";
 import {IProjectTask, ISprint} from "@/types/project/projectTasksViewModel.types";
-import {useAuthService} from "@/hooks/useAuth";
 import TaskListProgressCell
     from "@/pages/projects/projectView/taskList/task-list-table/task-list-table-cells/task-list-progress-cell/task-list-progress-cell";
 import React from "react";
-import StatusDropdown from "@components/task-list-common/status-dropdown/status-dropdown";
+import {Tag} from "antd/es";
 
 const ProjectViewSprints = () => {
-    const currentSession = useAuthService().getCurrentSession();
     const mockData: ISprint[] = [
         {
             id: 1,
@@ -21,7 +19,7 @@ const ProjectViewSprints = () => {
             tasks: [{
                 name: "Mock task1",
                 complete_ratio: 60,
-                status: "to_do",
+                status: "Todo",
                 priority: "critical",
                 manual_progress: "1",
             },{
@@ -72,9 +70,33 @@ const ProjectViewSprints = () => {
             title: 'Status',
             key: 'status',
             // @ts-ignore
-            render: (_, task: IProjectTask) => (
-                <StatusDropdown task={task} teamId={currentSession?.team_id || ''} />
-            )
+            render: (task: IProjectTask) => {
+                // const themeMode = useAppSelector(state => state.themeReducer.mode);
+                const status = task.status?.toLowerCase() || '';
+                const statusColorMap: Record<string, { light: string; dark: string }> = {
+                    to_do: { light: '#7c7c7c', dark: '#434343' },
+                    todo: { light: '#7c7c7c', dark: '#434343' },
+                    doing: { light: '#1890ff', dark: '#177ddc' },
+                    in_progress: { light: '#1890ff', dark: '#177ddc' },
+                    done: { light: '#52c41a', dark: '#389e0d' },
+                    completed: { light: '#52c41a', dark: '#389e0d' },
+                };
+
+                const color = statusColorMap[status]
+                    ?  statusColorMap[status].light
+                    : '#f0f0f0';
+
+                const displayText = {
+                    'to_do': 'To Do',
+                    'todo': 'To Do',
+                    'doing': 'Doing',
+                    'in_progress': 'In Progress',
+                    'done': 'Done',
+                    'completed': 'Completed',
+                }[status] || task.status;
+
+                return <Tag color={color}>{displayText}</Tag>;
+            }
         },
         {
             title: 'Priority',
