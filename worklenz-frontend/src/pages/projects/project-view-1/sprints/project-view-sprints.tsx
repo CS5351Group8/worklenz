@@ -12,12 +12,12 @@ const ProjectViewSprints = () => {
     const mockData: ISprint[] = [
         {
             id: 1,
-            project_id: 1,
+            projectId: 1,
             name: "mock Sprint 1",
             start_date: "2025-10-25",
             end_date: "2025-10-31",
             goal: "mock goal!",
-            tasks: [{
+            subtask: [{
                 name: "Mock task1",
                 complete_ratio: 60,
                 status: "Todo",
@@ -33,12 +33,12 @@ const ProjectViewSprints = () => {
         },
         {
             id: 2,
-            project_id: 1,
+            projectId: 1,
             name: "mock Sprint 2",
             start_date: "2025-10-31",
             end_date: "2025-11-20",
             goal: "This is a mock goal in sprint 2!",
-            tasks: [{
+            subtask: [{
                 name: "Mock task 2-1",
                 complete_ratio: 10,
                 status: "done",
@@ -61,16 +61,14 @@ const ProjectViewSprints = () => {
         try {
             setIsLoading(true);
             const result = await sprintService.getSprints();
-            console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++', result.data);
-
-            if (result.data && Array.isArray(result.data)) {
-                setSprints(result.data);
+            if (result.records && Array.isArray(result.records)) {
+                setSprints(result.records);
             } else {
-                console.warn('返回的数据格式与预期不符:', result.data);
+                console.warn('The returned data format does not match expectations:', result.records);
                 setSprints(mockData);
             }
         } catch (error) {
-            console.error('++++++++++++++++++++++出错:', error);
+            console.error(error);
             setSprints(mockData);
         } finally {
             setIsLoading(false);
@@ -154,7 +152,7 @@ const ProjectViewSprints = () => {
         label: <div>{sprint.name}</div>,
         children: (
             <Table
-                dataSource={sprint.tasks}
+                dataSource={sprint.subtask}
                 columns={taskTableColumns}
                 rowKey={(record, index) => `task-${index}`}
                 pagination={false}
