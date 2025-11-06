@@ -1,0 +1,38 @@
+
+.fixed-column-120 {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+}
+
+.centered-column {
+    text-align: center;
+}
+
+
+.centered-column .ant-table-thead > tr > th {
+    text-align: center;
+}
+
+
+.centered-column .ant-table-tbody > tr > td {
+    text-align: center;
+}
+
+
+.progress-column,
+.status-column,
+.priority-column {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+    text-align: center;
+}
+
+
+.progress-column .ant-table-column-title,
+.status-column .ant-table-column-title,
+.priority-column .ant-table-column-title {
+    text-align: center;
+    width: 100%;
+}
