@@ -1,5 +1,5 @@
 import './project-view-updates.css';
-import {Button, Collapse, DatePicker, Form, Input, Modal, Table} from "@/shared/antd-imports";
+import {Button, Collapse, DatePicker, Form, Input, message, Modal, Table} from "@/shared/antd-imports";
 import {CollapseProps} from "antd";
 import {IProjectTask, ISprint} from "@/types/project/projectTasksViewModel.types";
 import TaskListProgressCell
@@ -80,6 +80,23 @@ const ProjectViewSprints = () => {
             setIsLoading(false);
         }
     }, []);
+    const addSprint = useCallback(async (name:string,startDate:string,endDate:string,goal?:string,description?:string) => {
+        try {
+            setConfirmLoading(true);
+            const result = await sprintService.addSprints(projectId??"",name,startDate,endDate,goal,description);
+            console.log(result);
+            setIsModalOpen(false);
+            form.resetFields();
+            message.success('Sprint added successfully!');
+            await getSprints();
+        } catch (error) {
+            console.error(error);
+            message.error('Failed to add sprint');
+        } finally {
+            setConfirmLoading(false);
+        }
+    }, [projectId, form, getSprints]);
+
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -92,14 +109,7 @@ const ProjectViewSprints = () => {
     const handleSubmit = async () => {
         try {
             const values = await form.validateFields();
-
-            const formattedData = {
-                ...values,
-                start_date: values.start_date.format('YYYY-MM-DD'),
-                end_date: values.end_date.format('YYYY-MM-DD'),
-            };
-
-            await console.log(values);
+            await addSprint(values.name,values.start_date,values.end_date,values.goal,values.description);
         } catch (error) {
             console.error(error);
         }
@@ -222,18 +232,6 @@ const ProjectViewSprints = () => {
                     >
                         <Input placeholder="Enter sprint name" />
                     </Form.Item>
-
-                    <Form.Item
-                        name="goal"
-                        label="Sprint Goal"
-                        rules={[{ required: true, message: 'Please input sprint goal!' }]}
-                    >
-                        <Input.TextArea
-                            placeholder="Enter sprint goal"
-                            rows={3}
-                        />
-                    </Form.Item>
-
                     <Form.Item
                         name="start_date"
                         label="Start Date"
@@ -244,7 +242,6 @@ const ProjectViewSprints = () => {
                             placeholder="Select start date"
                         />
                     </Form.Item>
-
                     <Form.Item
                         name="end_date"
                         label="End Date"
@@ -266,6 +263,24 @@ const ProjectViewSprints = () => {
                         <DatePicker
                             style={{ width: '100%' }}
                             placeholder="Select end date"
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="goal"
+                        label="Sprint Goal"
+                    >
+                        <Input
+                            placeholder="Enter sprint goal"
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        name="description"
+                        label="Sprint Description"
+                    >
+                        <Input.TextArea
+                            placeholder="Enter sprint goal"
+                            rows={3}
                         />
                     </Form.Item>
                 </Form>
