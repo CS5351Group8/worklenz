@@ -23,6 +23,9 @@ const ProjectViewUpdates = React.lazy(
 const ProjectViewBacklog = React.lazy(
   () => import('@/pages/projects/projectView/backlog/TaskListV2')
 );
+const ProjectViewSprints = React.lazy(
+    () => import('@/pages/projects/project-view-1/sprints/project-view-sprints')
+);
 
 // type of a tab items
 type TabItems = {
@@ -48,6 +51,7 @@ const getTabLabel = (key: string): string => {
         members: 'Members',
         updates: 'Updates',
         backlog: 'Backlog',
+        sprints: 'Sprints',
       };
       return fallbacks[key] || key;
     }
@@ -128,7 +132,17 @@ export const tabItems: TabItems[] = [
     key: 'backlog',
     label: getTabLabel('backlog'),
     element: React.createElement(BacklogV2)
-  }
+  },
+  {
+      index: 7,
+      key: 'sprints',
+      label: getTabLabel('sprints'),
+      element: React.createElement(
+          Suspense,
+          { fallback: React.createElement(InlineSuspenseFallback) },
+          React.createElement(ProjectViewSprints)
+      ),
+  },
 ];
 
 // Function to update tab labels when language changes
