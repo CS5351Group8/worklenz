@@ -1,18 +1,17 @@
 import axios from 'axios';
-
 const BASE_URL = 'http://localhost:8080';
 
 export const sprintService = {
-    addSprints: async (projectId: string) => {
+    addSprints: async (projectId: string,name:string,startDate:string,endDate:string,goal?:string,description?:string) => {
         const response = await axios.post(
             `${BASE_URL}/sprints/add`,
             {
                 projectId: projectId,
-                name: "Sprint New without id",
-                startDate: "2025-11-06",
-                endDate: "2025-11-20",
-                goal: "试着去掉id",
-                description: "新增 Sprint，用于测试创建接口"
+                name: name,
+                startDate: startDate,
+                endDate: endDate,
+                goal: goal,
+                description: description
             }
         );
         return response.data;

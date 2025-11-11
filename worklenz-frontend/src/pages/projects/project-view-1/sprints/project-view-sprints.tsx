@@ -1,5 +1,5 @@
 import './project-view-updates.css';
-import {Collapse, Table} from "@/shared/antd-imports";
+import {Button, Collapse, DatePicker, Form, Input, message, Modal, Table} from "@/shared/antd-imports";
 import {CollapseProps} from "antd";
 import {IProjectTask, ISprint} from "@/types/project/projectTasksViewModel.types";
 import TaskListProgressCell
@@ -7,8 +7,14 @@ import TaskListProgressCell
 import React, {useEffect, useState, useCallback} from "react";
 import {Tag} from "antd/es";
 import {sprintService} from "@api/sprint/sprint.api.service";
+import {useParams} from "react-router-dom";
 
 const ProjectViewSprints = () => {
+    const {projectId} = useParams();
+    const [form] = Form.useForm();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+
     const mockData: ISprint[] = [
         {
             id: 1,
@@ -74,6 +80,40 @@ const ProjectViewSprints = () => {
             setIsLoading(false);
         }
     }, []);
+    const addSprint = useCallback(async (name:string,startDate:string,endDate:string,goal?:string,description?:string) => {
+        try {
+            setConfirmLoading(true);
+            const result = await sprintService.addSprints(projectId??"",name,startDate,endDate,goal,description);
+            console.log(result);
+            setIsModalOpen(false);
+            form.resetFields();
+            message.success('Sprint added successfully!');
+            await getSprints();
+        } catch (error) {
+            console.error(error);
+            message.error('Failed to add sprint');
+        } finally {
+            setConfirmLoading(false);
+        }
+    }, [projectId, form, getSprints]);
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+        form.resetFields();
+    };
+
+    const handleSubmit = async () => {
+        try {
+            const values = await form.validateFields();
+            await addSprint(values.name,values.start_date,values.end_date,values.goal,values.description);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     useEffect(() => {
         void getSprints();
@@ -162,10 +202,90 @@ const ProjectViewSprints = () => {
     }));
 
     return (
-        <Collapse
-            items={items}
-            defaultActiveKey={[sprints[0]?.id.toString()]}
-        />
+        <>
+            <Button type="primary" onClick={showModal}>
+                Add Sprint
+            </Button>
+            <div className={"h-4"}/>
+            <Collapse
+                items={items}
+                defaultActiveKey={[sprints[0]?.id.toString()]}
+            />
+            <Modal
+                title="Add New Sprint"
+                open={isModalOpen}
+                onOk={handleSubmit}
+                onCancel={handleCancel}
+                confirmLoading={confirmLoading}
+                okText="Submit"
+                cancelText="Cancel"
+            >
+                <Form
+                    form={form}
+                    layout="vertical"
+                    name="sprintForm"
+                >
+                    <Form.Item
+                        name="name"
+                        label="Sprint Name"
+                        rules={[{ required: true, message: 'Please input sprint name!' }]}
+                    >
+                        <Input placeholder="Enter sprint name" />
+                    </Form.Item>
+                    <Form.Item
+                        name="start_date"
+                        label="Start Date"
+                        rules={[{ required: true, message: 'Please select start date!' }]}
+                    >
+                        <DatePicker
+                            style={{ width: '100%' }}
+                            placeholder="Select start date"
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        name="end_date"
+                        label="End Date"
+                        rules={[
+                            { required: true, message: 'Please select end date!' },
+                            ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                    if (!value || !getFieldValue('start_date')) {
+                                        return Promise.resolve();
+                                    }
+                                    if (value.isBefore(getFieldValue('start_date'))) {
+                                        return Promise.reject(new Error('End date cannot be earlier than start date!'));
+                                    }
+                                    return Promise.resolve();
+                                },
+                            }),
+                        ]}
+                    >
+                        <DatePicker
+                            style={{ width: '100%' }}
+                            placeholder="Select end date"
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="goal"
+                        label="Sprint Goal"
+                    >
+                        <Input
+                            placeholder="Enter sprint goal"
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        name="description"
+                        label="Sprint Description"
+                    >
+                        <Input.TextArea
+                            placeholder="Enter sprint goal"
+                            rows={3}
+                        />
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </>
     );
 };
 
