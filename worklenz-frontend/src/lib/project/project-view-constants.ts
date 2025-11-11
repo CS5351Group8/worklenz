@@ -26,6 +26,9 @@ const ProjectViewBacklog = React.lazy(
 const ProjectViewSprints = React.lazy(
     () => import('@/pages/projects/project-view-1/sprints/project-view-sprints')
 );
+const ProjectViewBacklogNew = React.lazy(
+    () => import('@/pages/projects/projectView/backlognew/BacklogList')
+);
 
 // type of a tab items
 type TabItems = {
@@ -131,7 +134,11 @@ export const tabItems: TabItems[] = [
     index: 6,
     key: 'backlog',
     label: getTabLabel('backlog'),
-    element: React.createElement(BacklogV2)
+    element: React.createElement(
+          Suspense,
+          { fallback: React.createElement(InlineSuspenseFallback) },
+          React.createElement(ProjectViewBacklogNew)
+      ),
   },
   {
       index: 7,
