@@ -5,6 +5,7 @@ import i18n from '@/i18n';
 // Import core components synchronously to avoid suspense in main tabs
 import ProjectViewEnhancedBoard from '@/pages/projects/projectView/enhancedBoard/project-view-enhanced-board';
 import TaskListV2 from '@/components/task-list-v2/TaskListV2';
+import BacklogV2 from '@/pages/projects/projectView/backlog/TaskListV2';
 
 // Lazy load less critical components
 const ProjectViewInsights = React.lazy(
@@ -18,6 +19,9 @@ const ProjectViewMembers = React.lazy(
 );
 const ProjectViewUpdates = React.lazy(
   () => import('@/pages/projects/project-view-1/updates/project-view-updates')
+);
+const ProjectViewBacklog = React.lazy(
+  () => import('@/pages/projects/projectView/backlog/TaskListV2')
 );
 const ProjectViewSprints = React.lazy(
     () => import('@/pages/projects/project-view-1/sprints/project-view-sprints')
@@ -46,6 +50,7 @@ const getTabLabel = (key: string): string => {
         files: 'Files',
         members: 'Members',
         updates: 'Updates',
+        backlog: 'Backlog',
         sprints: 'Sprints',
       };
       return fallbacks[key] || key;
@@ -60,6 +65,7 @@ const getTabLabel = (key: string): string => {
       files: 'Files',
       members: 'Members',
       updates: 'Updates',
+      backlog: 'Backlog',
     };
     return fallbacks[key] || key;
   }
@@ -121,16 +127,22 @@ export const tabItems: TabItems[] = [
       React.createElement(ProjectViewUpdates)
     ),
   },
-    {
-        index: 7,
-        key: 'sprints',
-        label: getTabLabel('sprints'),
-        element: React.createElement(
-            Suspense,
-            { fallback: React.createElement(InlineSuspenseFallback) },
-            React.createElement(ProjectViewSprints)
-        ),
-    },
+  {
+    index: 6,
+    key: 'backlog',
+    label: getTabLabel('backlog'),
+    element: React.createElement(BacklogV2)
+  },
+  {
+      index: 7,
+      key: 'sprints',
+      label: getTabLabel('sprints'),
+      element: React.createElement(
+          Suspense,
+          { fallback: React.createElement(InlineSuspenseFallback) },
+          React.createElement(ProjectViewSprints)
+      ),
+  },
 ];
 
 // Function to update tab labels when language changes
