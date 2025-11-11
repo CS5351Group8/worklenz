@@ -1,0 +1,186 @@
+[33mb7ddf43[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mpartical-update[m[33m)[m 添加sprintId查询、projectID查询
+[33m4fd2182[m Merge remote-tracking branch 'upstream/main' pl
+[33mc9c7d44[m spring-backlog分支-未与sprint部分代码合并
+[33m084d907[m[33m ([m[1;31mupstream/main[m[33m)[m Merge pull request #2 from SaulpZhang/main
+[33mfa62010[m [CG-40][feat]init a new backend service by springboot
+[33m9d6d38f[m Merge pull request #334 from Worklenz/development
+[33m665f9de[m Merge pull request #333 from Worklenz/feat/i18n/ko-missing-translation
+[33ma9b0281[m feat(locales): add Korean translations for account deletion and survey features
+[33m9c986af[m Merge pull request #294 from ChoccoJang/feature/add-language-korean-error-fix
+[33mcc8a0cf[m Merge pull request #330 from OmentaElvis/fix/docker-compose
+[33mecd9ddd[m fix(docker): set db healthcheck start_period to 30s
+[33ma04bbc2[m fix(docker): move inline init commands to standalone scripts
+[33m092689d[m Merge pull request #327 from Worklenz/chamikaJ-patch-1
+[33m63cd29f[m Update README.md
+[33m039cf9f[m Merge pull request #320 from Worklenz/development
+[33m1401af3[m Merge pull request #319 from Worklenz/release-v2.1.4
+[33m38e7d92[m refactor(tawk): remove Tawk.to integration from frontend and backend
+[33mfd0d27b[m feat(analytics): enhance Mixpanel tracking with user identity on initialization
+[33m3caf36e[m feat(analytics): integrate Mixpanel tracking across various components
+[33m2c01a98[m feat(localization): add "or" string for team switching across multiple languages
+[33m4ad1120[m refactor(auth): normalize email handling for case-insensitivity
+[33m7a8d6e4[m feat(localization): add team switching strings across multiple languages
+[33m043ff7d[m refactor(subscription): remove `LIFE_TIME_DEAL` from expirable subscription types in hooks and navbar component
+[33me17efb5[m Merge pull request #315 from Worklenz/development
+[33m4e74716[m Merge pull request #314 from Worklenz/release-v2.1.4
+[33mafeb28f[m refactor(navbar): remove unused subscription types from navbar component
+[33me326095[m Merge pull request #313 from Worklenz/development
+[33m05e908d[m Merge pull request #312 from Worklenz/release-v2.1.4
+[33mf18dc04[m refactor(navbar-imports): correct navbar import paths in layout files
+[33m10d5d0f[m refactor(navbar-imports): standardize navbar import paths in layout files
+[33m83c9628[m refactor(navbar-imports): update navbar import paths for consistency
+[33m6161b8b[m feat(account-deletion): implement account deletion request and logging functionality
+[33mc894a03[m Merge branch 'release-v2.1.4' of https://github.com/Worklenz/worklenz into release-v2.1.4
+[33mc6cb30b[m refactor(license-management): optimize user data retrieval and notification settings
+[33m8656286[m Merge pull request #311 from Worklenz/chore/added-google-login-from-mobile-app
+[33m17e5cc3[m feat(navbar): add mobile menu and language selector components
+[33m7a2318c[m feat(support): implement support contact functionality and enhance user experience
+[33mfc5bc3c[m Merge pull request #310 from shancds/upstreame-release-v2.1.4
+[33mb8aa29b[m feat(task-comments): enhance reactions structure in comment response.
+[33m66a28dd[m feat(license-management): implement license expiration alerts and modal
+[33m2da186e[m fix(hubspot): ensure production check is correctly applied for HubSpot script loading
+[33mabc923a[m refactor(auth): simplify session middleware and remove debug endpoint
+[33m097c281[m feat(auth): enhance session middleware logging and error handling
+[33ma1aaf9b[m refactor(auth): remove debug logging from authentication methods
+[33m66edec2[m feat(auth): enhance session ID generation and improve cookie handling
+[33m7ce4ba1[m feat(auth): add cookie-signature dependency and enhance session cookie handling
+[33m0959f3f[m feat(auth): enhance session middleware logging and error handling
+[33mcc68a5e[m feat(auth): improve session cookie handling and logging in middleware
+[33m3ebf262[m feat(auth): enhance session handling for mobile compatibility
+[33m57c7135[m feat(auth): enhance session management and debugging capabilities
+[33m3cb44e8[m fix(auth): correct type assertion for session passport property
+[33m11a31e5[m feat(auth): improve session regeneration and response handling in login process
+[33m5b00d83[m feat(auth): enhance session handling and response logging in authentication
+[33m8e5d55c[m feat(auth): add detailed logging for authentication processes
+[33m7bb020d[m feat(auth): implement mobile Google authentication using Passport strategy
+[33m84f96b7[m Merge pull request #309 from shancds/upstreame-release-v2.1.4
+[33mf87fba9[m refactor(task-comments): update response structure for comment data
+[33m81d5c85[m feat(task-comments): enhance comment response with user avatar and attachments
+[33m945c52b[m Merge branch 'chore/added-google-login-from-mobile-app' of https://github.com/Worklenz/worklenz into upstreame-release-v2.1.4
+[33mf84d834[m feat(auth): add logging for token audience validation in Google authentication
+[33m01ce34f[m feat(auth): enhance token audience validation for Google authentication
+[33m210a9a7[m fix(labels-controller): update color validation to use WorklenzColorShades for label updates
+[33m6e37208[m fix(password-validator): adjust password length validation to include maximum length of 32 characters
+[33m8188b5c[m feat(auth): enhance Google authentication validation
+[33m0e21eac[m feat(auth): implement mobile Google authentication endpoint
+[33m136dac1[m feat(labels): implement label update functionality and enhance UI
+[33m884cb9c[m refactor(SettingsLayout): streamline layout and improve styling
+[33md1bd36e[m refactor(AdminCenterLayout): simplify layout structure and improve styling
+[33m7c42087[m feat(update-notification): implement update notification system for new versions
+[33m14c89de[m chore(tests): remove obsolete SQL test scripts for sort order validation
+[33mb1bdf0a[m feat(hubspot): add dark mode support and light color scheme for chat widget
+[33m7635676[m feat(trial-user-limits): implement trial member limit checks in project and team controllers
+[33m2bd6c19[m refactor(layouts): simplify MainLayout and enhance styling
+[33m3745952[m feat(task-list-v2): enhance sticky column behavior and dark mode support
+[33mb6c056d[m feat(task-status-dropdown): enhance task status update and group movement handling
+[33m81e1872[m refactor(task-list): simplify drag-and-drop functionality and enhance task rendering
+[33m5cce3bc[m feat(localization): add timer conflict handling and update translations
+[33m8d17490[m fix(reporting): update task logging queries for accuracy
+[33mc53ab51[m Merge branch 'main' of https://github.com/Worklenz/worklenz into release-v2.1.4
+[33m7b9a16f[m Merge pull request #307 from Worklenz/development
+[33m8830af2[m refactor: update .gitignore and remove obsolete files
+[33mb915de2[m feat(reporting): enhance date handling and export functionality
+[33m29b8c1b[m feat(task-context-menu): add copy link functionality and update translations
+[33mc2b231d[m feat(survey-modal): add survey modal configuration to environment files
+[33m53a28cf[m refactor(localization): update task-related translations and improve user activity feed
+[33me8ccc2a[m Merge pull request #306 from Worklenz/feature/task-activities-by-user
+[33mf24c0d8[m Merge branch 'release-v2.1.4' into feature/task-activities-by-user
+[33m01a580d[m Merge pull request #304 from Worklenz/fix/reporting-sidebar-style-fix
+[33mc2e670c[m feat(survey-localization): add survey localization files for multiple languages
+[33m25042ba[m Merge pull request #303 from Worklenz/fix/reporting-sidebar-style-fix
+[33me8d21ee[m feat(account-setup): implement skip functionality and update localization
+[33ma8d1446[m Merge pull request #302 from Worklenz/fix/reporting-sidebar-style-fix
+[33m2082934[m feat(hubspot-integration): refine HubSpot widget styling and add account setup skip functionality
+[33m4debcd6[m Merge pull request #301 from Worklenz/fix/reporting-sidebar-style-fix
+[33m76adb89[m feat(task-filters): enhance sorting functionality and localization updates
+[33m703a642[m feat(surveys): add survey tables and initial data for account setup questionnaire
+[33me2c9e19[m Merge pull request #300 from Worklenz/fix/reporting-sidebar-style-fix
+[33me2a749e[m refactor(survey-submission): update validation logic and submission data handling
+[33m2c0b0ac[m Merge pull request #299 from Worklenz/fix/reporting-sidebar-style-fix
+[33mdd511b2[m refactor(reporting-layout): streamline sidebar and content layout
+[33m2c860b0[m feat(localization): update password-related translations in German and Spanish signup forms
+[33m1e6045c[m Merge pull request #297 from Worklenz/fix/task-time-log-timezone-fix
+[33m2a9e12a[m feat(task-time-logs): enhance time log retrieval and formatting with user timezone
+[33mfd2fc79[m Merge pull request #295 from Worklenz/chore/added-sign-up-survey
+[33m8380b35[m refactor(template-drawer): remove unused parameters from TemplateDrawer component
+[33m2aaf0fc[m feat(account-setup): refactor language handling in account setup process
+[33m8d93c8b[m fix: task comment attach file upload bug fix
+[33mf3b7479[m Merge pull request #291 from Worklenz/chore/added-sign-up-survey
+[33m65745e3[m Merge branch 'release-v2.1.4' into chore/added-sign-up-survey
+[33mcabd05e[m Merge pull request #290 from Worklenz/imp/invite--improvement
+[33m6e71a91[m Merge pull request #288 from shancds/test/invitation-process
+[33mf6317b2[m Merge branch 'feature/add-language-korean-error-fix' of https://github.com/HyunJoonJang/worklenz into feature/add-language-korean-error-fix
+[33mef0f98b[m feat: korea language add and bug fix.
+[33me361d16[m feat: korea language add and bug fix.
+[33m7dc3ded[m feat(account-setup): enhance localization and UI for account setup process
+[33m944acf9[m feat(project-member-drawer): filter out already invited members from the selection list
+[33ma9d0244[m fix(update-member-drawer): correct job title assignment in member update request
+[33mb688f8e[m feat(account-setup): enhance account setup process with new survey and task management features
+[33me7e9cfc[m Merge branch 'release-v2.1.4' of https://github.com/Worklenz/worklenz into test/invitation-process
+[33m27605b4[m feat(assignee-selector): enhance member invitation functionality and integrate project manager checks
+[33mff4b0ed[m Merge pull request #287 from Worklenz/imp/invite--improvement
+[33mfe7c15c[m feat(surveys): implement account setup survey functionality
+[33m15ff69a[m refactor(styles): remove outdated HubSpot widget dark mode CSS overrides
+[33m070c643[m Merge pull request #283 from shancds/test/invitation-process
+[33m980af8b[m Merge branch 'imp/invite--improvement' into test/invitation-process
+[33m1931856[m Merge branch 'main' of https://github.com/Worklenz/worklenz into fix/timelog-timezone-fix
+[33mfe3fb5e[m Merge pull request #285 from Worklenz/development
+[33mef47df8[m Merge pull request #284 from Worklenz/fix/release-v2.1.3
+[33m7ea05d2[m feat(database): add performance indexes for optimized task queries
+[33mdaa6546[m feat(reporting): add utility methods for date and time calculations in ReportingMembersController
+[33mde26417[m refactor(reporting): enhance timezone handling and clean up migration
+[33m69b2fe1[m feat(reporting): implement timezone support in reporting allocation and related components
+[33m5c327a3[m Merge pull request #281 from Worklenz/development
+[33m123a912[m Merge pull request #280 from Worklenz/fix/release-v2.1.3
+[33m78516d8[m feat(analytics-hubspot): modularize analytics and HubSpot integration
+[33m9946c9a[m fix(upgrade-plans): adjust minimum seat value logic and enhance HubSpot widget dark mode styles
+[33m4887383[m feat(upgrade-plans): add responsive styles and improve layout for upgrade plans component
+[33ma6863d8[m refactor: update code to use centralized Ant Design imports
+[33medf81db[m refactor: update Ant Design imports to centralized path
+[33m300d476[m Enhance project member management with search functionality and localization updates
+[33m80f5feb[m feat(antd-imports): establish centralized import rules for Ant Design components
+[33maaaac09[m Merge branch 'fix/release-v2.1.3' of https://github.com/Worklenz/worklenz into test/invitation-process
+[33mc4400d1[m Refactor invite components to comment out unused UI elements
+[33ma6286eb[m feat(migrations): add README for node-pg-migrate and enhance frontend configuration
+[33mee75aea[m Merge pull request #278 from Worklenz/fix/release-v2.1.3
+[33me3c002b[m style(task-list): enhance styling for task list components
+[33m3beed3d[m feat(auth): update password requirements and localization for signup
+[33m33aace7[m refactor(tasks): improve code readability and formatting in tasks-controller-v2
+[33mda791e2[m Enhance project member invitation feature with new localization and UI updates
+[33m354b942[m feat(tasks): add color_code_dark to task groups and enhance task list display
+[33m3373dcc[m Update localization and UI for team member invitation feature
+[33m06da0d2[m Enhance project member drawer localization and UI
+[33m256f1eb[m feat(task-list): enhance empty state display in task list component
+[33m5f86ba6[m feat(auth): implement new authentication pages and refactor routes
+[33m5addcee[m Merge branch 'release/v2.1.2' of https://github.com/Worklenz/worklenz into test/invitation-process
+[33m3419d7e[m Merge branch 'feature/project-gantt-chart' of https://github.com/Worklenz/worklenz into test/invitation-process
+[33m78d960b[m feat(gantt): introduce advanced Gantt chart components and demo page
+[33m8dc3133[m Merge pull request #275 from shancds/test/kanban-order-v1.2.3
+[33m1709fad[m Add drag-and-drop data transfer support in EnhancedKanbanBoardNativeDnD
+[33m7f71e89[m Enhance EnhancedKanbanBoardNativeDnD with task priority updates and socket integration
+[33m22d2023[m Update phase handling in EnhancedKanbanBoardNativeDnD component
+[33mfa08463[m Enhance localization support in Kanban board
+[33m7226932[m Enhance EnhancedKanbanBoardNativeDnD to support phase reordering
+[33m6adf40f[m Merge pull request #274 from shancds/test/kanban-order-v1.2.2
+[33mf03f6e6[m Implement task order updates and socket emissions in EnhancedKanbanBoardNativeDnD
+[33ma112d39[m Merge pull request #272 from Worklenz/development
+[33m4788294[m Merge pull request #271 from Worklenz/release/v2.1.2
+[33md7416ff[m Merge branch 'test/kanban-right-click-feature-v1.2.1' of https://github.com/shancds/worklenz-open-source into test/kanban-order-v1.2.2
+[33md89247e[m Add delete phase confirmation modal with localization support
+[33m5318f95[m Merge branch 'release/v2.1.2' of https://github.com/Worklenz/worklenz into test/kanban-order-v1.2.2
+[33mc80b00e[m Add delete status confirmation modal with localization support
+[33mf484764[m Implement task deletion functionality in TaskCard component
+[33m737f7ca[m refactor(App): streamline cache cleanup process on logout
+[33m833879e[m feat(logout): implement cache cleanup and service worker unregistration on logout
+[33mcb5610d[m feat(timer): add useTimerInitialization hook for managing running timers
+[33m0434bbb[m refactor(account-setup): update ProjectStep to use custom dispatch and refresh user session
+[33m6e911d7[m feat(auth): add combined AuthAndSetupGuard for route protection
+[33m0bb748c[m feat(database-migrations): implement grouping-specific sort orders and constraints
+[33mba5d497[m Merge pull request #270 from shancds/test/row-kanban-board-v1.2.0
+[33md462014[m Update TaskProgressCircle to visually indicate task completion
+[33m8d7d54b[m Enhance TaskCard accessibility by adding title attribute to task name
+[33mc34b94c[m Merge pull request #269 from shancds/test/row-kanban-board-v1.2.0
+[33m55a0028[m refactor(drag-and-drop): replace console logging with error logging
+[33m1737120[m feat(drag-and-drop): enhance task grouping updates and socket event handling
+[33m8304407[m Enhance task status handling and progress visualization in Kanban board
+[33ma03d9ef[m Merge pull requ

@@ -1,0 +1,5 @@
+com\cityu\spring\controller\DemoController.class
+com\cityu\spring\Application.class
+com\cityu\spring\model\Demo.class
+com\cityu\spring\Repository\DemoRepository.class
+com\cityu\spring\controller\TestController.class
