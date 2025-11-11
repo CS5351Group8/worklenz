@@ -50,6 +50,7 @@ const BacklogListTable: React.FC = () => {
   const [openMenuFor, setOpenMenuFor] = useState<string | null>(null)
   const [editingTask, setEditingTask] = useState<Task | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalMode, setModalMode] = useState<'add' | 'edit'>('edit')
 
   // close menu when clicking outside
   useEffect(() => {
@@ -65,7 +66,10 @@ const BacklogListTable: React.FC = () => {
 
   function addRow() {
     const id = `T-${idRef.current++}`
-    setTasks(prev => [defaultTask(id), ...prev])
+    const newTask = defaultTask(id)
+    setEditingTask(newTask)
+    setModalMode('add')
+    setIsModalOpen(true)
   }
 
   function deleteRow(taskId: string) {
@@ -75,14 +79,22 @@ const BacklogListTable: React.FC = () => {
 
   function openEditModal(task: Task) {
     setEditingTask(task)
+    setModalMode('edit')
     setIsModalOpen(true)
     setOpenMenuFor(null)
   }
 
   function handleSaveEditedTask(updated: Task) {
-    setTasks(prev => prev.map(t => (t.taskId === updated.taskId ? updated : t)))
+    if (modalMode === 'edit') {
+      // Edit mode: update existing task
+      setTasks(prev => prev.map(t => (t.taskId === updated.taskId ? updated : t)))
+    } else if (modalMode === 'add') {
+      // Add mode: add new task
+      setTasks(prev => [updated, ...prev])
+    }
     setIsModalOpen(false)
     setEditingTask(null)
+    setModalMode('edit')
   }
 
   function updateTask(taskId: string, patch: Partial<Task>) {
@@ -193,15 +205,17 @@ const BacklogListTable: React.FC = () => {
           </tbody>
         </table>
       </div>
-      {/* Edit modal */}
+      {/* Edit/Add modal */}
       <BacklogEditModal
         open={isModalOpen}
         task={editingTask}
         onClose={() => {
           setIsModalOpen(false)
           setEditingTask(null)
+          setModalMode('edit')
         }}
         onSave={handleSaveEditedTask}
+        mode={modalMode}
       />
     </div>
   )
