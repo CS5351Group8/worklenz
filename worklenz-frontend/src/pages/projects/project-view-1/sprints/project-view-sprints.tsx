@@ -1,5 +1,5 @@
 import './project-view-updates.css';
-import {Button, Collapse, DatePicker, Form, Input, message, Modal, Table} from "@/shared/antd-imports";
+import {Button, Collapse, DatePicker, DeleteOutlined, Form, Input, message, Modal, Table} from "@/shared/antd-imports";
 import {CollapseProps} from "antd";
 import {IProjectTask, ISprint} from "@/types/project/projectTasksViewModel.types";
 import TaskListProgressCell
@@ -96,6 +96,25 @@ const ProjectViewSprints = () => {
             setConfirmLoading(false);
         }
     }, [projectId, form, getSprints]);
+
+    const deleteSprint = useCallback(async (sprintId: number) => {
+        Modal.confirm({
+            title: 'Are you sure you want to delete this sprint?',
+            content: 'This action cannot be undone.',
+            okText: 'Yes',
+            okType: 'danger',
+            cancelText: 'No',
+            onOk: async () => {
+                try {
+                    message.success('Sprint deleted successfully!');
+                    await getSprints();
+                } catch (error) {
+                    console.error(error);
+                    message.error('Failed to delete sprint');
+                }
+            },
+        });
+    }, [getSprints]);
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -199,6 +218,15 @@ const ProjectViewSprints = () => {
                 className="project-sprints-table"
             />
         ),
+        extra: (
+            <DeleteOutlined
+                onClick={(e) => {
+                    e.stopPropagation();
+                    deleteSprint(sprint.id).then();
+                }}
+                style={{ fontSize: '16px', color: '#ff4d4f' }}
+            />
+        )
     }));
 
     return (
