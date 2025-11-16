@@ -106,6 +106,7 @@ const ProjectViewSprints = () => {
             cancelText: 'No',
             onOk: async () => {
                 try {
+                    await sprintService.deleteSprint(sprintId);
                     message.success('Sprint deleted successfully!');
                     await getSprints();
                 } catch (error) {
