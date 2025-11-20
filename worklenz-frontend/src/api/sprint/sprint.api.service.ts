@@ -23,6 +23,12 @@ export const sprintService = {
         );
         return response.data;
     },
+    deleteSprint: async (id: number) => {
+    const response = await axios.delete(
+        `${BASE_URL}/sprints/delete/${id}`
+    );
+    return response.data;
+},
 
     getSprints: async (page: number = 1) => {
         const response = await axios.get(
