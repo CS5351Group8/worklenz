@@ -20,6 +20,7 @@
   "refreshTooltip": "Refresh project data",
   "settingsTooltip": "Open project settings",
   "saveAsTemplateTooltip": "Save this project as a template",
+  "downloadReportTooltip": "Download the project report",
   "inviteTooltip": "Invite team members to this project",
   "createTaskTooltip": "Create a new task",
   "importTaskTooltip": "Import task from template",
