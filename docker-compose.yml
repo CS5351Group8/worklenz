@@ -31,6 +31,17 @@ services:
       - ./worklenz-backend/.env
     networks:
       - worklenz
+  
+  backend-django:
+    build:
+      context: ./worklenz-backend/src-django
+      dockerfile: Dockerfile
+    container_name: workprism_django
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - worklenz
 
   minio:
     image: minio/minio:latest
