@@ -191,127 +191,97 @@ const ProjectViewHeader = memo(() => {
   const handleDownloadReport = useCallback(async () => {
     if (!projectId) return;
 
-    try {
-      setDownloadingReport(true);
+    setDownloadingReport(true);
 
-      const includeArchived = false;
-      const timeRange = {};
+    const includeArchived = false;
+    const timeRange = {};
 
-      const [
-        projectRes,
-        overviewStatsRes,
-        overviewInsightsRes,
-        projectInfoRes,
-        membersOverviewRes,
-        reportingMembersRes,
-        memberStatsRes,
-        taskStatusCountsRes,
-        priorityOverviewRes,
-        deadlineStatsRes,
-        overdueTasksRes,
-        completedEarlyTasksRes,
-        completedLateTasksRes,
-        taskListV3Res,
-        lastUpdatedTasksRes,
-        projectLogsRes,
-        timeSheetsRes,
-        estimatedVsActualRes,
-      ] = await Promise.all([
-        projectsApiService.getProject(projectId),
-        projectsApiService.getOverViewById(projectId),
-        projectInsightsApiService.getProjectOverviewData(projectId, includeArchived),
-        reportingApiService.getProjectInfo(projectId),
-        projectsApiService.getOverViewMembersById(projectId, includeArchived),
-        reportingApiService.getProjectMembers(projectId),
-        projectInsightsApiService.getMemberInsightAStats(projectId, includeArchived),
-        projectInsightsApiService.getTaskStatusCounts(projectId, includeArchived),
-        projectInsightsApiService.getPriorityOverview(projectId, includeArchived),
-        projectInsightsApiService.getProjectDeadlineStats(projectId, includeArchived),
-        projectInsightsApiService.getOverdueTasks(projectId, includeArchived),
-        projectInsightsApiService.getTasksCompletedEarly(projectId, includeArchived),
-        projectInsightsApiService.getTasksCompletedLate(projectId, includeArchived),
-        tasksApiService.getTaskListV3({
-          id: projectId,
-          field: null,
-          order: null,
-          search: null,
-          statuses: null,
-          members: null,
-          projects: null,
-          labels: null,
-          priorities: null,
-          archived: includeArchived,
-          count: false,
-          parent_task: undefined,
-          group: 'status',
-          isSubtasksInclude: true,
-          include_empty: 'true',
-          customColumns: true,
-        }),
-        projectInsightsApiService.getLastUpdatedTasks(projectId, includeArchived),
-        projectInsightsApiService.getProjectLogs(projectId),
-        reportingTimesheetApiService.getProjectTimeSheets(
-          { project_ids: [projectId], ...timeRange },
-          includeArchived
-        ),
-        reportingTimesheetApiService.getProjectEstimatedVsActual(
-          { project_ids: [projectId], ...timeRange },
-          includeArchived
-        ),
-      ]);
+    const [
+      projectRes,
+      overviewStatsRes,
+      overviewInsightsRes,
+      projectInfoRes,
+      membersOverviewRes,
+      reportingMembersRes,
+      memberStatsRes,
+      taskStatusCountsRes,
+      priorityOverviewRes,
+      deadlineStatsRes,
+      overdueTasksRes,
+      completedEarlyTasksRes,
+      completedLateTasksRes,
+      lastUpdatedTasksRes,
+      projectLogsRes,
+      timeSheetsRes,
+      estimatedVsActualRes,
+    ] = await Promise.all([
+      projectsApiService.getProject(projectId),
+      projectsApiService.getOverViewById(projectId),
+      projectInsightsApiService.getProjectOverviewData(projectId, includeArchived),
+      reportingApiService.getProjectInfo(projectId),
+      projectsApiService.getOverViewMembersById(projectId, includeArchived),
+      reportingApiService.getProjectMembers(projectId),
+      projectInsightsApiService.getMemberInsightAStats(projectId, includeArchived),
+      projectInsightsApiService.getTaskStatusCounts(projectId, includeArchived),
+      projectInsightsApiService.getPriorityOverview(projectId, includeArchived),
+      projectInsightsApiService.getProjectDeadlineStats(projectId, includeArchived),
+      projectInsightsApiService.getOverdueTasks(projectId, includeArchived),
+      projectInsightsApiService.getTasksCompletedEarly(projectId, includeArchived),
+      projectInsightsApiService.getTasksCompletedLate(projectId, includeArchived),
+      projectInsightsApiService.getLastUpdatedTasks(projectId, includeArchived),
+      projectInsightsApiService.getProjectLogs(projectId),
+      reportingTimesheetApiService.getProjectTimeSheets(
+        { project_ids: [projectId], ...timeRange },
+        includeArchived
+      ),
+      reportingTimesheetApiService.getProjectEstimatedVsActual(
+        { project_ids: [projectId], ...timeRange },
+        includeArchived
+      ),
+    ]);
 
-      const getData = (res: any) =>
-        res && typeof res === 'object' && 'data' in res ? res.data : res;
+    const getData = (res: any) =>
+      res && typeof res === 'object' && 'data' in res ? res.data : res;
 
-      const payload = {
-        projectId,
-        project: getData(projectRes),
-        overviewStats: getData(overviewStatsRes),
-        overviewInsights: getData(overviewInsightsRes),
-        reportingProjectInfo: getData(projectInfoRes),
-        membersOverview: getData(membersOverviewRes),
-        reportingMembers: getData(reportingMembersRes),
-        memberStats: getData(memberStatsRes),
-        taskStatusCounts: getData(taskStatusCountsRes),
-        priorityOverview: getData(priorityOverviewRes),
-        deadlineStats: getData(deadlineStatsRes),
-        overdueTasks: getData(overdueTasksRes),
-        completedEarlyTasks: getData(completedEarlyTasksRes),
-        completedLateTasks: getData(completedLateTasksRes),
-        taskListV3: getData(taskListV3Res),
-        lastUpdatedTasks: getData(lastUpdatedTasksRes),
-        projectLogs: getData(projectLogsRes),
-        timeSheets: getData(timeSheetsRes),
-        estimatedVsActual: getData(estimatedVsActualRes),
-      };
+    const payload = {
+      projectId,
+      project: getData(projectRes),
+      overviewStats: getData(overviewStatsRes),
+      overviewInsights: getData(overviewInsightsRes),
+      reportingProjectInfo: getData(projectInfoRes),
+      membersOverview: getData(membersOverviewRes),
+      reportingMembers: getData(reportingMembersRes),
+      memberStats: getData(memberStatsRes),
+      taskStatusCounts: getData(taskStatusCountsRes),
+      priorityOverview: getData(priorityOverviewRes),
+      deadlineStats: getData(deadlineStatsRes),
+      overdueTasks: getData(overdueTasksRes),
+      completedEarlyTasks: getData(completedEarlyTasksRes),
+      completedLateTasks: getData(completedLateTasksRes),
+      lastUpdatedTasks: getData(lastUpdatedTasksRes),
+      projectLogs: getData(projectLogsRes),
+      timeSheets: getData(timeSheetsRes),
+      estimatedVsActual: getData(estimatedVsActualRes),
+    };
 
-      const response = await fetch('http://localhost:8000/api/report/pdf', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+    const response = await fetch('http://localhost:8000/api/report/pdf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
 
-      if (!response.ok) {
-        throw new Error(`Django report generation failed with status ${response.status}`);
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `project-report-${projectId}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      logger.error('Error building project report payload', error);
-    } finally {
-      setDownloadingReport(false);
-    }
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `project-report-${projectId}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+    setDownloadingReport(false);
   }, [projectId]);
 
   // Memoized settings handler
