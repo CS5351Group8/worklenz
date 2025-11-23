@@ -94,3 +94,14 @@ npm test
 ## Docker Support
 
 The backend can be run in a Docker container. See the main project README for Docker setup instructions.
+
+### Tear down the stack and remove the DB volume
+
+```bash
+docker compose down
+
+docker volume ls | grep worklenz_postgres_data
+docker volume rm worklenz_worklenz_postgres_data
+
+docker compose up -d --build
+```
