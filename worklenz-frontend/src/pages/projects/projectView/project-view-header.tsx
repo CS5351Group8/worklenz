@@ -16,6 +16,7 @@ import {
   SettingOutlined,
   SyncOutlined,
   UsergroupAddOutlined,
+  DownloadOutlined
 } from '@/shared/antd-imports';
 import { PageHeader } from '@ant-design/pro-components';
 import { useTranslation } from 'react-i18next';
@@ -67,6 +68,12 @@ import { fetchEnhancedKanbanGroups } from '@/features/enhanced-kanban/enhanced-k
 import { fetchTasksV3 } from '@/features/task-management/task-management.slice';
 import { ShareAltOutlined } from '@/shared/antd-imports';
 import { fetchStatuses } from '@/features/taskAttributes/taskStatusSlice';
+import { projectsApiService } from '@/api/projects/projects.api.service';
+import { projectInsightsApiService } from '@/api/projects/insights/project-insights.api.service';
+import { reportingApiService } from '@/api/reporting/reporting.api.service';
+import { reportingTimesheetApiService } from '@/api/reporting/reporting.timesheet.api.service.updated';
+import { tasksApiService } from '@/api/tasks/tasks.api.service';
+
 
 const ProjectViewHeader = memo(() => {
   const navigate = useNavigate();
@@ -90,6 +97,7 @@ const ProjectViewHeader = memo(() => {
 
   const [creatingTask, setCreatingTask] = useState(false);
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
+  const [downloadingReport, setDownloadingReport] = useState(false);
 
   // Use ref to track subscription timeout
   const subscriptionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -179,6 +187,102 @@ const ProjectViewHeader = memo(() => {
       setSubscriptionLoading(false);
     }
   }, [selectedProject, socket, subscriptionLoading, currentSession, dispatch]);
+
+  const handleDownloadReport = useCallback(async () => {
+    if (!projectId) return;
+
+    setDownloadingReport(true);
+
+    const includeArchived = false;
+    const timeRange = {};
+
+    const [
+      projectRes,
+      overviewStatsRes,
+      overviewInsightsRes,
+      projectInfoRes,
+      membersOverviewRes,
+      reportingMembersRes,
+      memberStatsRes,
+      taskStatusCountsRes,
+      priorityOverviewRes,
+      deadlineStatsRes,
+      overdueTasksRes,
+      completedEarlyTasksRes,
+      completedLateTasksRes,
+      lastUpdatedTasksRes,
+      projectLogsRes,
+      timeSheetsRes,
+      estimatedVsActualRes,
+    ] = await Promise.all([
+      projectsApiService.getProject(projectId),
+      projectsApiService.getOverViewById(projectId),
+      projectInsightsApiService.getProjectOverviewData(projectId, includeArchived),
+      reportingApiService.getProjectInfo(projectId),
+      projectsApiService.getOverViewMembersById(projectId, includeArchived),
+      reportingApiService.getProjectMembers(projectId),
+      projectInsightsApiService.getMemberInsightAStats(projectId, includeArchived),
+      projectInsightsApiService.getTaskStatusCounts(projectId, includeArchived),
+      projectInsightsApiService.getPriorityOverview(projectId, includeArchived),
+      projectInsightsApiService.getProjectDeadlineStats(projectId, includeArchived),
+      projectInsightsApiService.getOverdueTasks(projectId, includeArchived),
+      projectInsightsApiService.getTasksCompletedEarly(projectId, includeArchived),
+      projectInsightsApiService.getTasksCompletedLate(projectId, includeArchived),
+      projectInsightsApiService.getLastUpdatedTasks(projectId, includeArchived),
+      projectInsightsApiService.getProjectLogs(projectId),
+      reportingTimesheetApiService.getProjectTimeSheets(
+        { project_ids: [projectId], ...timeRange },
+        includeArchived
+      ),
+      reportingTimesheetApiService.getProjectEstimatedVsActual(
+        { project_ids: [projectId], ...timeRange },
+        includeArchived
+      ),
+    ]);
+
+    const getData = (res: any) =>
+      res && typeof res === 'object' && 'data' in res ? res.data : res;
+
+    const payload = {
+      projectId,
+      project: getData(projectRes),
+      overviewStats: getData(overviewStatsRes),
+      overviewInsights: getData(overviewInsightsRes),
+      reportingProjectInfo: getData(projectInfoRes),
+      membersOverview: getData(membersOverviewRes),
+      reportingMembers: getData(reportingMembersRes),
+      memberStats: getData(memberStatsRes),
+      taskStatusCounts: getData(taskStatusCountsRes),
+      priorityOverview: getData(priorityOverviewRes),
+      deadlineStats: getData(deadlineStatsRes),
+      overdueTasks: getData(overdueTasksRes),
+      completedEarlyTasks: getData(completedEarlyTasksRes),
+      completedLateTasks: getData(completedLateTasksRes),
+      lastUpdatedTasks: getData(lastUpdatedTasksRes),
+      projectLogs: getData(projectLogsRes),
+      timeSheets: getData(timeSheetsRes),
+      estimatedVsActual: getData(estimatedVsActualRes),
+    };
+
+    const response = await fetch('http://localhost:8000/api/report/pdf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `project-report-${projectId}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+    setDownloadingReport(false);
+  }, [projectId]);
 
   // Memoized settings handler
   const handleSettingsClick = useCallback(() => {
@@ -372,6 +476,17 @@ const ProjectViewHeader = memo(() => {
       );
     }
 
+    actions.push(
+      <Tooltip key = "download-report" title = {t('downloadReportTooltip')}>
+        <Button
+          shape = "circle"
+          loading = {downloadingReport}
+          icon = {<DownloadOutlined />}
+          onClick = {handleDownloadReport}
+        />
+      </Tooltip>
+    );
+
     // Settings button
     actions.push(
       <Tooltip key="settings" title={t('settingsTooltip')}>
@@ -447,6 +562,8 @@ const ProjectViewHeader = memo(() => {
     handleRefresh,
     isOwnerOrAdmin,
     handleSaveAsTemplate,
+    downloadingReport,
+    handleDownloadReport,
     handleSettingsClick,
     t,
     subscriptionLoading,
