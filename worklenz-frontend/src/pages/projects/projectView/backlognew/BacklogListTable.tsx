@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import BacklogEditModal from './BacklogEditModal'
+import BacklogMoveModal from './BacklogMoveModal'
 
 type Task = {
   taskId: string
@@ -53,6 +54,8 @@ const BacklogListTable: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState<'add' | 'edit'>('edit')
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null)
+  const [moveModalOpen, setMoveModalOpen] = useState(false)
+  const [moveTaskId, setMoveTaskId] = useState<string | null>(null)
 
   // close menu when clicking outside
   useEffect(() => {
@@ -230,6 +233,19 @@ const BacklogListTable: React.FC = () => {
               <li>
                 <button
                   onClick={() => {
+                    // open move modal (stubbed)
+                    setMoveTaskId(task.taskId)
+                    setMoveModalOpen(true)
+                    setMenuPos(null)
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200"
+                >
+                  Move To Sprint
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
                     deleteRow(task.taskId)
                     setMenuPos(null)
                   }}
@@ -243,6 +259,20 @@ const BacklogListTable: React.FC = () => {
           document.body
         )
       })()}
+
+      {/* Move modal (stubbed) */}
+      <BacklogMoveModal
+        open={moveModalOpen}
+        taskId={moveTaskId}
+        onClose={() => {
+          setMoveModalOpen(false)
+          setMoveTaskId(null)
+        }}
+        onConfirm={sprint => {
+          // stubbed: no-op for now; close handled in modal
+          console.log('Move confirmed to', sprint, 'for', moveTaskId)
+        }}
+      />
 
       {/* Edit/Add modal */}
       <BacklogEditModal
