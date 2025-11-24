@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import BacklogEditModal from './BacklogEditModal'
 
 type Task = {
@@ -51,6 +52,7 @@ const BacklogListTable: React.FC = () => {
   const [editingTask, setEditingTask] = useState<Task | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState<'add' | 'edit'>('edit')
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null)
 
   // close menu when clicking outside
   useEffect(() => {
@@ -62,6 +64,20 @@ const BacklogListTable: React.FC = () => {
     }
     document.addEventListener('click', onDocClick)
     return () => document.removeEventListener('click', onDocClick)
+  }, [])
+
+  // close menu on scroll/resize to avoid stale position
+  useEffect(() => {
+    function onClose() {
+      setOpenMenuFor(null)
+      setMenuPos(null)
+    }
+    window.addEventListener('scroll', onClose, true)
+    window.addEventListener('resize', onClose)
+    return () => {
+      window.removeEventListener('scroll', onClose, true)
+      window.removeEventListener('resize', onClose)
+    }
   }, [])
 
   function addRow() {
@@ -116,7 +132,7 @@ const BacklogListTable: React.FC = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto overflow-y-visible">
         <table className="w-full table-auto border-collapse">
           <thead>
             <tr className="text-left text-sm text-gray-600 border-b">
@@ -159,7 +175,14 @@ const BacklogListTable: React.FC = () => {
                 <td className="p-2 align-top text-right relative">
                   <button
                     onClick={e => {
+                      // open the portal menu positioned near this button
                       e.stopPropagation()
+                      const btn = e.currentTarget as HTMLElement
+                      const rect = btn.getBoundingClientRect()
+                      const menuWidth = 144 // approx w-36
+                      const left = Math.max(8, rect.right - menuWidth + window.scrollX)
+                      const top = rect.bottom + window.scrollY + 6
+                      setMenuPos({ left, top })
                       setOpenMenuFor(prev => (prev === task.taskId ? null : task.taskId))
                     }}
                     aria-haspopup="true"
@@ -169,29 +192,6 @@ const BacklogListTable: React.FC = () => {
                   >
                     ⋮
                   </button>
-
-                  {openMenuFor === task.taskId && (
-                    <div className="blt-row-menu absolute right-2 top-8 z-10 bg-white border rounded shadow-md w-36">
-                      <ul className="p-1 text-sm">
-                        <li>
-                          <button
-                            onClick={() => openEditModal(task)}
-                            className="w-full text-left px-3 py-2 hover:bg-gray-50 text-gray-700"
-                          >
-                            Edit
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            onClick={() => deleteRow(task.taskId)}
-                            className="w-full text-left px-3 py-2 hover:bg-red-50 text-red-600"
-                          >
-                            Delete task
-                          </button>
-                        </li>
-                      </ul>
-                    </div>
-                  )}
                 </td>
               </tr>
             ))}
@@ -205,6 +205,45 @@ const BacklogListTable: React.FC = () => {
           </tbody>
         </table>
       </div>
+      {/* Portal menu (renders into body) */}
+      {openMenuFor && menuPos && (() => {
+        const task = tasks.find(t => t.taskId === openMenuFor)
+        if (!task) return null
+        return createPortal(
+          <div
+            className="blt-row-menu z-50 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded shadow-md w-36"
+            style={{ position: 'absolute', top: menuPos.top, left: menuPos.left }}
+            onClick={e => e.stopPropagation()}
+          >
+            <ul className="p-1 text-sm">
+              <li>
+                <button
+                  onClick={() => {
+                    openEditModal(task)
+                    setMenuPos(null)
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200"
+                >
+                  Edit
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
+                    deleteRow(task.taskId)
+                    setMenuPos(null)
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-red-50 dark:hover:bg-slate-700 text-red-600 dark:text-red-400"
+                >
+                  Delete task
+                </button>
+              </li>
+            </ul>
+          </div>,
+          document.body
+        )
+      })()}
+
       {/* Edit/Add modal */}
       <BacklogEditModal
         open={isModalOpen}
