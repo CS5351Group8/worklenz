@@ -185,8 +185,8 @@ const ProjectViewSprints = () => {
         },
         {
             title: 'Priority',
-            dataIndex: 'priority',
-            key: 'priority',
+            dataIndex: 'priorityName',
+            key: 'priorityName',
             width: 120,
             align: 'center' as const,
             className: 'priority-column',
