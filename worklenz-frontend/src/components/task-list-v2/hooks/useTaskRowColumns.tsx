@@ -4,6 +4,7 @@ import {
   DragHandleColumn,
   CheckboxColumn,
   TaskKeyColumn,
+  TaskTypeColumn,
   DescriptionColumn,
   StatusColumn,
   AssigneesColumn,
@@ -138,6 +139,14 @@ export const useTaskRowColumns = ({
           <TaskKeyColumn
             width={width}
             taskKey={task.task_key || ''}
+          />
+        );
+
+      case 'taskType':
+        return (
+          <TaskTypeColumn
+            width={width}
+            task={task}
           />
         );
 
@@ -327,6 +336,7 @@ export const useTaskRowColumns = ({
         <div 
           style={{
             ...wrapperStyle,
+             // @ts-ignore
             '--hover-bg': hoverBg,
           } as React.CSSProperties}
           className="border-r border-gray-200 dark:border-gray-700 overflow-hidden sticky-column-hover hover:bg-[var(--hover-bg)]"

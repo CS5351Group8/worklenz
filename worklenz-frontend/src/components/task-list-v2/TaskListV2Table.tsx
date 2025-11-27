@@ -272,6 +272,9 @@ const TaskListV2Section: React.FC = () => {
       // Always show drag handle and title (sticky columns)
       if (column.isSticky) return true;
 
+      // Always include the Task Type header so it's hard-coded into the table header
+      if (column.id === 'taskType') return true;
+
       // Primary: Check local fields configuration
       const field = fields.find(f => f.key === column.key);
       if (field) {
