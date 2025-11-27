@@ -8,7 +8,7 @@ type Task = {
   taskName: string
   description?: string
   taskType?: string
-  isDone?: boolean
+  priority?: 'Low' | 'Medium' | 'High'
   startDate?: string // ISO date
   endDate?: string // ISO date
   status?: string
@@ -19,7 +19,7 @@ const defaultTask = (id: string): Task => ({
   taskName: '',
   description: '',
   taskType: 'Task',
-  isDone: false,
+  priority: 'Medium',
   startDate: '',
   endDate: '',
   status: 'To Do',
@@ -34,6 +34,7 @@ const BacklogListTable: React.FC = () => {
     t1.taskName = 'Design login page'
     t1.description = 'Create wireframes and final UI for login'
     t1.taskType = 'User Story'
+    t1.priority = 'High'
     t1.startDate = '2025-11-01'
     t1.endDate = '2025-11-05'
     t1.status = 'In Progress'
@@ -42,7 +43,7 @@ const BacklogListTable: React.FC = () => {
     t2.taskName = 'Implement auth API'
     t2.description = 'Implement JWT login endpoint'
     t2.taskType = 'Feature'
-    t2.isDone = false
+    t2.priority = 'Medium'
     t2.status = 'To Do'
 
     idRef.current = 3
@@ -60,7 +61,7 @@ const BacklogListTable: React.FC = () => {
   const [nameFilter, setNameFilter] = useState('')
   const [typeFilter, setTypeFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
-  const [onlyDone, setOnlyDone] = useState<'all' | 'done' | 'not'>('all')
+  const [priorityFilter, setPriorityFilter] = useState<string>('')
 
   // close menu when clicking outside
   useEffect(() => {
@@ -163,13 +164,14 @@ const BacklogListTable: React.FC = () => {
             </select>
 
             <select
-              value={onlyDone}
-              onChange={e => setOnlyDone(e.target.value as 'all' | 'done' | 'not')}
+              value={priorityFilter}
+              onChange={e => setPriorityFilter(e.target.value)}
               className="px-2 py-1 border rounded text-sm bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-100"
             >
-              <option value="all">All</option>
-              <option value="done">Done</option>
-              <option value="not">Not Done</option>
+              <option value="">All priority</option>
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
             </select>
           </div>
         </div>
@@ -193,7 +195,7 @@ const BacklogListTable: React.FC = () => {
               <th className="p-2">ID</th>
               <th className="p-2">Description</th>
               <th className="p-2">Type</th>
-              <th className="p-2">Done</th>
+              <th className="p-2">Priority</th>
               <th className="p-2">Start</th>
               <th className="p-2">End</th>
               <th className="p-2">Status</th>
@@ -209,9 +211,8 @@ const BacklogListTable: React.FC = () => {
                 if (typeFilter && task.taskType !== typeFilter) return false
                 // status filter
                 if (statusFilter && task.status !== statusFilter) return false
-                // done filter
-                if (onlyDone === 'done' && !task.isDone) return false
-                if (onlyDone === 'not' && task.isDone) return false
+                // priority filter
+                if (priorityFilter && task.priority !== priorityFilter) return false
                 return true
               })
               .map(task => (
@@ -227,7 +228,7 @@ const BacklogListTable: React.FC = () => {
                   <div className="text-sm">{task.taskType || '-'}</div>
                 </td>
                 <td className="p-2 align-top text-center">
-                  <div className="text-sm">{task.isDone ? 'Yes' : 'No'}</div>
+                  <div className="text-sm">{task.priority || '-'}</div>
                 </td>
                 <td className="p-2 align-top">
                   <div className="text-sm">{task.startDate || '-'}</div>
