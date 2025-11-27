@@ -94,6 +94,7 @@ export interface IProjectTask {
     project_use_manual_progress?: boolean;
     project_use_time_progress?: boolean;
     project_use_weighted_progress?: boolean;
+    priorityName?: string;
 }
 
 export interface IProjectTasksViewModel {
