@@ -56,7 +56,7 @@ const BacklogListTable: React.FC = () => {
   const [modalMode, setModalMode] = useState<'add' | 'edit'>('edit')
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null)
   const [moveModalOpen, setMoveModalOpen] = useState(false)
-  const [moveTaskId, setMoveTaskId] = useState<string | null>(null)
+  const [moveTask, setMoveTask] = useState<Task | null>(null)
   // filter state
   const [nameFilter, setNameFilter] = useState('')
   const [typeFilter, setTypeFilter] = useState('')
@@ -297,8 +297,8 @@ const BacklogListTable: React.FC = () => {
               <li>
                 <button
                   onClick={() => {
-                    // open move modal (stubbed)
-                    setMoveTaskId(task.taskId)
+                    // open move modal for this task
+                    setMoveTask(task)
                     setMoveModalOpen(true)
                     setMenuPos(null)
                   }}
@@ -327,14 +327,18 @@ const BacklogListTable: React.FC = () => {
       {/* Move modal (stubbed) */}
       <BacklogMoveModal
         open={moveModalOpen}
-        taskId={moveTaskId}
+        task={moveTask}
         onClose={() => {
           setMoveModalOpen(false)
-          setMoveTaskId(null)
+          setMoveTask(null)
         }}
         onConfirm={sprint => {
-          // stubbed: no-op for now; close handled in modal
-          console.log('Move confirmed to', sprint, 'for', moveTaskId)
+          // on successful move, remove the task from backlog
+          if (moveTask) {
+            setTasks(prev => prev.filter(t => t.taskId !== moveTask.taskId))
+          }
+          setMoveModalOpen(false)
+          setMoveTask(null)
         }}
       />
 
