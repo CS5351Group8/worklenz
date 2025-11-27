@@ -93,11 +93,10 @@ const BacklogEditModal: React.FC<Props> = ({ open, task, onClose, onSave, mode =
               value={form.taskType}
               onChange={e => update('taskType', e.target.value)}
             >
+              <option>Task</option>
+              <option>User Story</option>
               <option>Feature</option>
               <option>Bug</option>
-              <option>Chore</option>
-              <option>Design</option>
-              <option>Backend</option>
             </select>
           </div>
 

@@ -18,7 +18,7 @@ const defaultTask = (id: string): Task => ({
   taskId: id,
   taskName: '',
   description: '',
-  taskType: 'Feature',
+  taskType: 'Task',
   isDone: false,
   startDate: '',
   endDate: '',
@@ -33,7 +33,7 @@ const BacklogListTable: React.FC = () => {
     const t1 = defaultTask('T-1')
     t1.taskName = 'Design login page'
     t1.description = 'Create wireframes and final UI for login'
-    t1.taskType = 'Design'
+    t1.taskType = 'User Story'
     t1.startDate = '2025-11-01'
     t1.endDate = '2025-11-05'
     t1.status = 'In Progress'
@@ -41,7 +41,7 @@ const BacklogListTable: React.FC = () => {
     const t2 = defaultTask('T-2')
     t2.taskName = 'Implement auth API'
     t2.description = 'Implement JWT login endpoint'
-    t2.taskType = 'Backend'
+    t2.taskType = 'Feature'
     t2.isDone = false
     t2.status = 'To Do'
 
@@ -56,6 +56,11 @@ const BacklogListTable: React.FC = () => {
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null)
   const [moveModalOpen, setMoveModalOpen] = useState(false)
   const [moveTaskId, setMoveTaskId] = useState<string | null>(null)
+  // filter state
+  const [nameFilter, setNameFilter] = useState('')
+  const [typeFilter, setTypeFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [onlyDone, setOnlyDone] = useState<'all' | 'done' | 'not'>('all')
 
   // close menu when clicking outside
   useEffect(() => {
@@ -122,8 +127,53 @@ const BacklogListTable: React.FC = () => {
 
   return (
     <div className="p-4 bg-white rounded shadow-sm">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-semibold">Backlog</h2>
+      <div className="flex items-center justify-between mb-3 flex-wrap gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800 p-2 rounded">
+            <input
+              type="text"
+              placeholder="Search name"
+              value={nameFilter}
+              onChange={e => setNameFilter(e.target.value)}
+              className="px-2 py-1 border rounded w-40 text-sm bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-100"
+            />
+
+            <select
+              value={typeFilter}
+              onChange={e => setTypeFilter(e.target.value)}
+              className="px-2 py-1 border rounded text-sm bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-100"
+            >
+              <option value="">All types</option>
+              <option>Task</option>
+              <option>User Story</option>
+              <option>Feature</option>
+              <option>Bug</option>
+            </select>
+
+            <select
+              value={statusFilter}
+              onChange={e => setStatusFilter(e.target.value)}
+              className="px-2 py-1 border rounded text-sm bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-100"
+            >
+              <option value="">All status</option>
+              <option>To Do</option>
+              <option>In Progress</option>
+              <option>Blocked</option>
+              <option>Done</option>
+            </select>
+
+            <select
+              value={onlyDone}
+              onChange={e => setOnlyDone(e.target.value as 'all' | 'done' | 'not')}
+              className="px-2 py-1 border rounded text-sm bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-100"
+            >
+              <option value="all">All</option>
+              <option value="done">Done</option>
+              <option value="not">Not Done</option>
+            </select>
+          </div>
+        </div>
+
         <div className="flex items-center gap-2">
           <button
             onClick={addRow}
@@ -151,7 +201,20 @@ const BacklogListTable: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {tasks.map(task => (
+            {tasks
+              .filter(task => {
+                // name filter
+                if (nameFilter && !task.taskName.toLowerCase().includes(nameFilter.toLowerCase())) return false
+                // type filter
+                if (typeFilter && task.taskType !== typeFilter) return false
+                // status filter
+                if (statusFilter && task.status !== statusFilter) return false
+                // done filter
+                if (onlyDone === 'done' && !task.isDone) return false
+                if (onlyDone === 'not' && task.isDone) return false
+                return true
+              })
+              .map(task => (
               <tr key={task.taskId} className="border-b hover:bg-gray-50">
                 <td className="p-2 align-top">
                   <div className="text-sm font-medium">{task.taskName || '-'}</div>
