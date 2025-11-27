@@ -5,7 +5,7 @@ type Task = {
   taskName: string
   description?: string
   taskType?: string
-  isDone?: boolean
+  priority?: 'Low' | 'Medium' | 'High'
   startDate?: string
   endDate?: string
   status?: string
@@ -100,14 +100,17 @@ const BacklogEditModal: React.FC<Props> = ({ open, task, onClose, onSave, mode =
             </select>
           </div>
 
-          <div className="flex items-center gap-2">
-            <label className="block text-sm text-gray-600">Done</label>
-            <input
-              type="checkbox"
-              checked={!!form.isDone}
-              onChange={e => update('isDone', e.target.checked)}
-              className="ml-2"
-            />
+          <div>
+            <label className="block text-sm text-gray-600">Priority</label>
+            <select
+              className="mt-1 w-full border rounded px-2 py-1"
+              value={form.priority || 'Medium'}
+              onChange={e => update('priority', e.target.value as 'Low' | 'Medium' | 'High')}
+            >
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
+            </select>
           </div>
 
           <div>
