@@ -132,6 +132,7 @@ export const COLUMN_KEYS = {
   LAST_UPDATED: 'LAST_UPDATED',
   REPORTER: 'REPORTER',
   PHASE: 'PHASE',
+  TASK_TYPE: 'TASK_TYPE',
 } as const;
 
 export const COLUMN_KEYS_LIST = Object.values(COLUMN_KEYS).map(key => ({

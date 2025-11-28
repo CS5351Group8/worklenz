@@ -27,13 +27,13 @@ const ProjectViewSprints = () => {
                 name: "Mock task1",
                 complete_ratio: 60,
                 status: "Todo",
-                priority: "critical",
+                priorityName: "critical",
                 manual_progress: "1",
             }, {
                 name: "Mock task 2 +++",
                 complete_ratio: 20,
                 status: "in_progress",
-                priority: "high",
+                priorityName: "high",
                 manual_progress: "2",
             }]
         },
@@ -48,13 +48,13 @@ const ProjectViewSprints = () => {
                 name: "Mock task 2-1",
                 complete_ratio: 10,
                 status: "done",
-                priority: "medium",
+                priorityName: "medium",
                 manual_progress: "2-1",
             }, {
                 name: "Mock task name is 2-2 +++",
                 complete_ratio: 30,
                 status: "completed",
-                priority: "low",
+                priorityName: "low",
                 manual_progress: "2-2",
             }]
         },
@@ -185,13 +185,13 @@ const ProjectViewSprints = () => {
         },
         {
             title: 'Priority',
-            dataIndex: 'priority',
-            key: 'priority',
+            dataIndex: 'priorityName',
+            key: 'priorityName',
             width: 120,
             align: 'center' as const,
             className: 'priority-column',
-            render: (priority: string) => {
-                const priorityLower = priority?.toLowerCase() || '';
+            render: (priorityName: string) => {
+                const priorityLower = priorityName?.toLowerCase() || '';
                 const priorityMap: Record<string, { color: string; text: string }> = {
                     critical: {color: '#ff4d4f', text: 'Critical'},
                     high: {color: '#fa8c16', text: 'High'},
@@ -200,7 +200,7 @@ const ProjectViewSprints = () => {
                 };
                 const priorityInfo = priorityMap[priorityLower] || {
                     color: '#f0f0f0',
-                    text: priority || 'Unknown'
+                    text: priorityName || 'Unknown'
                 };
                 return <Tag color={priorityInfo.color}>{priorityInfo.text}</Tag>;
             }

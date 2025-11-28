@@ -1,6 +1,7 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { CheckCircleOutlined, HolderOutlined } from '@/shared/antd-imports';
 import { Checkbox } from '@/shared/antd-imports';
+import { Select } from '@/shared/antd-imports';
 import { Task } from '@/types/task-management.types';
 import AssigneeSelector from '@/components/AssigneeSelector';
 import { format } from 'date-fns';
@@ -119,6 +120,85 @@ export const TaskKeyColumn: React.FC<TaskKeyColumnProps> = memo(({ width, taskKe
 ));
 
 TaskKeyColumn.displayName = 'TaskKeyColumn';
+
+interface TaskTypeColumnProps {
+  width: string;
+  task?: Task;
+  updateTaskType?: (taskId: string, taskType: string) => void;
+}
+
+const CANONICAL_TYPES = ['Task', 'Feature', 'User Story', 'Bug'];
+
+const getCanonicalTaskType = (task?: Task): string | null => {
+  if (!task) return null;
+
+  const candidates = [
+    // common variants seen in different payloads
+    (task as any).task_type,
+    (task as any).type,
+    (task as any).issue_type,
+    (task as any).taskType,
+    // custom column bags (if present)
+    (task as any).custom_column_values && (task as any).custom_column_values.task_type,
+  ];
+
+  for (const raw of candidates) {
+    if (!raw && raw !== 0) continue;
+    const s = String(raw).trim();
+    if (!s) continue;
+    // try to match known canonical types (case-insensitive, allow short forms)
+    const lower = s.toLowerCase();
+    if (lower.includes('story')) return 'User Story';
+    if (lower === 'user story') return 'User Story';
+    if (lower === 'feature') return 'Feature';
+    if (lower === 'bug') return 'Bug';
+    if (lower === 'task') return 'Task';
+    // sometimes values may be ids or labels; try direct compare to canonical list
+    for (const c of CANONICAL_TYPES) {
+      if (s.toLowerCase() === c.toLowerCase()) return c;
+    }
+  }
+
+  return null;
+};
+
+export const TaskTypeColumn: React.FC<TaskTypeColumnProps> = memo(({ width, task, updateTaskType }) => {
+  // default should be 'Task' per request
+  const initial = getCanonicalTaskType(task) || 'Task';
+  const [selected, setSelected] = useState<string>(initial);
+
+  // sync when task prop changes (e.g., list updates)
+  useEffect(() => {
+    const next = getCanonicalTaskType(task) || 'Task';
+    setSelected(next);
+  }, [task]);
+
+  const options = CANONICAL_TYPES.map((t) => ({ label: t, value: t }));
+
+  const handleChange = (value: string) => {
+    setSelected(value);
+    if (!task) return;
+    const taskId = (task as any).id || (task as any).task_id || '';
+    if (updateTaskType && taskId) {
+      updateTaskType(taskId, value);
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-center px-2 border-r border-gray-200 dark:border-gray-700" style={{ width }}>
+      <Select
+        size="small"
+        value={selected}
+        onChange={handleChange}
+        options={options}
+        style={{ minWidth: 110 }}
+        dropdownMatchSelectWidth={false}
+      />
+    </div>
+  );
+});
+
+TaskTypeColumn.displayName = 'TaskTypeColumn';
 
 interface DescriptionColumnProps {
   width: string;
